@@ -116,6 +116,10 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         ) {
             return $fromConstructor;
         }
+
+        if ($fromDefaultValue = $this->extractFromDefaultValue($class, $property)) {
+            return $fromDefaultValue;
+        }
     }
 
     /**
@@ -227,6 +231,32 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         }
 
         return null;
+    }
+
+    private function extractFromDefaultValue(string $class, string $property)
+    {
+        try {
+            $reflectionClass = new \ReflectionClass($class);
+        } catch (\ReflectionException $e) {
+            return null;
+        }
+
+        $defaultValues = $reflectionClass->getDefaultProperties();
+
+        if (!isset($defaultValues[$property]) && !array_key_exists($property, $defaultValues)) {
+            return null;
+        }
+
+        $map = [
+            'integer' => Type::BUILTIN_TYPE_INT,
+            'boolean' => Type::BUILTIN_TYPE_BOOL,
+            'double' => Type::BUILTIN_TYPE_FLOAT,
+            'NULL' => Type::BUILTIN_TYPE_NULL
+        ];
+
+        $type = gettype($defaultValues[$property]);
+
+        return array(new Type($map[$type] ?? $type, false, $class));
     }
 
     private function extractFromReflectionType(\ReflectionType $reflectionType, \ReflectionMethod $reflectionMethod): Type
