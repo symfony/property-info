@@ -214,6 +214,25 @@ class ReflectionExtractorTest extends TestCase
     }
 
     /**
+     * @dataProvider defaultValueProvider
+     */
+    public function testExtractWithDefaultValue($property, $type)
+    {
+        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue', $property, array()));
+    }
+
+    public function defaultValueProvider()
+    {
+        return array(
+            array('defaultInt', array(new Type(Type::BUILTIN_TYPE_INT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue'))),
+            array('defaultFloat', array(new Type(Type::BUILTIN_TYPE_FLOAT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue'))),
+            array('defaultString', array(new Type(Type::BUILTIN_TYPE_STRING, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue'))),
+            array('defaultArray', array(new Type(Type::BUILTIN_TYPE_ARRAY, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue'))),
+            array('defaultNull', array(new Type(Type::BUILTIN_TYPE_NULL, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue'))),
+        );
+    }
+
+    /**
      * @dataProvider getReadableProperties
      */
     public function testIsReadable($property, $expected)
