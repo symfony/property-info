@@ -1081,6 +1081,24 @@ class PhpStanExtractorTest extends TestCase
             Type::nullable(Type::generic(Type::object(IFace::class), Type::object(Dummy::class))),
         ];
     }
+
+    /**
+     * @dataProvider descriptionsProvider
+     */
+    public function testGetDescriptions(string $property, ?string $shortDescription, ?string $longDescription)
+    {
+        $this->assertEquals($shortDescription, $this->extractor->getShortDescription(Dummy::class, $property));
+        $this->assertEquals($longDescription, $this->extractor->getLongDescription(Dummy::class, $property));
+    }
+
+    public static function descriptionsProvider(): iterable
+    {
+        yield ['foo', 'Short description.', 'Long description.'];
+        yield ['bar', 'This is bar', null];
+        yield ['baz', 'Should be used.', null];
+        yield ['bal', 'A short description ignoring template.', "A long description...\n\n...over several lines."];
+        yield ['foo2', null, null];
+    }
 }
 
 class PhpStanOmittedParamTagTypeDocBlock
