@@ -11,6 +11,9 @@
 
 namespace Symfony\Component\PropertyInfo\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
@@ -23,11 +26,9 @@ use Symfony\Component\TypeInfo\Type;
  */
 class PropertyInfoExtractorTest extends AbstractPropertyInfoExtractorTest
 {
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideNestedExtractorWithoutGetTypeImplementationData
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
+    #[DataProvider('provideNestedExtractorWithoutGetTypeImplementationData')]
     public function testNestedExtractorWithoutGetTypeImplementation(string $property, ?Type $expectedType)
     {
         $propertyInfoExtractor = new PropertyInfoExtractor([], [new class implements PropertyTypeExtractorInterface {

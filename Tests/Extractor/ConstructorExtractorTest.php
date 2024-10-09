@@ -11,8 +11,9 @@
 
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectUserDeprecationMessageTrait;
 use Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyExtractor;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
@@ -23,8 +24,6 @@ use Symfony\Component\TypeInfo\Type;
  */
 class ConstructorExtractorTest extends TestCase
 {
-    use ExpectUserDeprecationMessageTrait;
-
     private ConstructorExtractor $extractor;
 
     protected function setUp(): void
@@ -48,9 +47,8 @@ class ConstructorExtractorTest extends TestCase
         $this->assertNull($extractor->getType('Foo', 'bar', []));
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
     public function testGetTypes()
     {
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');
@@ -58,9 +56,8 @@ class ConstructorExtractorTest extends TestCase
         $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_STRING)], $this->extractor->getTypes('Foo', 'bar', []));
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
     public function testGetTypesIfNoExtractors()
     {
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');

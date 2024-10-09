@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\PropertyInfo\Tests;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\PropertyAccessExtractorInterface;
 use Symfony\Component\PropertyInfo\PropertyDescriptionExtractorInterface;
@@ -60,9 +62,8 @@ class AbstractPropertyInfoExtractorTest extends TestCase
         $this->assertEquals(Type::int(), $this->propertyInfo->getType('Foo', 'bar', []));
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
     public function testGetTypes()
     {
         $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_INT)], $this->propertyInfo->getTypes('Foo', 'bar', []));
