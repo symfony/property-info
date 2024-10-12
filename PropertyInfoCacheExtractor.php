@@ -56,9 +56,6 @@ class PropertyInfoCacheExtractor implements PropertyInfoExtractorInterface, Prop
         return $this->extract('getProperties', [$class, $context]);
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         return $this->extract('getType', [$class, $property, $context]);

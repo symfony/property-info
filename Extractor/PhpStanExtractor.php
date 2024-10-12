@@ -185,9 +185,6 @@ final class PhpStanExtractor implements PropertyTypeExtractorInterface, Construc
         return $types;
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         /** @var PhpDocNode|null $docNode */
@@ -234,9 +231,6 @@ final class PhpStanExtractor implements PropertyTypeExtractorInterface, Construc
         return Type::list($type);
     }
 
-    /**
-     * @experimental
-     */
     public function getTypeFromConstructor(string $class, string $property): ?Type
     {
         if (!$tagDocNode = $this->getDocBlockFromConstructor($class, $property)) {

@@ -106,8 +106,6 @@ final class PhpDocTypeHelper
 
     /**
      * Creates a {@see Type} from a PHPDoc type.
-     *
-     * @experimental
      */
     public function getType(DocType $varType): ?Type
     {

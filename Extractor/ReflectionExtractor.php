@@ -205,9 +205,6 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         return $types;
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         [$mutatorReflection, $prefix] = $this->getMutatorMethod($class, $property);
@@ -269,9 +266,6 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         return $type;
     }
 
-    /**
-     * @experimental
-     */
     public function getTypeFromConstructor(string $class, string $property): ?Type
     {
         try {

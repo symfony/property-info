@@ -29,9 +29,6 @@ final class ConstructorExtractor implements PropertyTypeExtractorInterface
     ) {
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         foreach ($this->extractors as $extractor) {

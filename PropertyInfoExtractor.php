@@ -53,9 +53,6 @@ class PropertyInfoExtractor implements PropertyInfoExtractorInterface, PropertyI
         return $this->extract($this->descriptionExtractors, 'getLongDescription', [$class, $property, $context]);
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         return $this->extract($this->typeExtractors, 'getType', [$class, $property, $context]);

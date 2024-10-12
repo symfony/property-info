@@ -194,9 +194,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         return array_merge([], ...$types);
     }
 
-    /**
-     * @experimental
-     */
     public function getType(string $class, string $property, array $context = []): ?Type
     {
         /** @var DocBlock $docBlock */
@@ -256,9 +253,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         return Type::list($type);
     }
 
-    /**
-     * @experimental
-     */
     public function getTypeFromConstructor(string $class, string $property): ?Type
     {
         if (!$docBlock = $this->getDocBlockFromConstructor($class, $property)) {
