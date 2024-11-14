@@ -33,6 +33,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\NullableType;
 use Symfony\Component\TypeInfo\TypeResolver\PhpDocAwareReflectionTypeResolver;
 
 /**
@@ -772,7 +773,14 @@ class ReflectionExtractorTest extends TestCase
         yield ['foo', Type::nullable(Type::array())];
         yield ['bar', Type::nullable(Type::int())];
         yield ['timeout', Type::union(Type::int(), Type::float())];
-        yield ['optional', Type::union(Type::nullable(Type::int()), Type::nullable(Type::float()))];
+
+        // BC layer for type-info < 7.2
+        if (!class_exists(NullableType::class)) {
+            yield ['optional', Type::union(Type::nullable(Type::int()), Type::nullable(Type::float()))];
+        } else {
+            yield ['optional', Type::nullable(Type::union(Type::float(), Type::int()))];
+        }
+
         yield ['string', Type::union(Type::string(), Type::object(\Stringable::class))];
         yield ['payload', Type::mixed()];
         yield ['data', Type::mixed()];
