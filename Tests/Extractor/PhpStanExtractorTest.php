@@ -36,6 +36,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsingTrait;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Exception\LogicException;
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\WrappingTypeInterface;
 
 require_once __DIR__.'/../Fixtures/Extractor/DummyNamespace.php';
 
@@ -869,7 +870,14 @@ class PhpStanExtractorTest extends TestCase
     public static function pseudoTypesProvider(): iterable
     {
         yield ['classString', Type::string()];
-        yield ['classStringGeneric', Type::string()];
+
+        // BC layer for type-info < 7.2
+        if (!interface_exists(WrappingTypeInterface::class)) {
+            yield ['classStringGeneric', Type::generic(Type::string(), Type::object(\stdClass::class))];
+        } else {
+            yield ['classStringGeneric', Type::string()];
+        }
+
         yield ['htmlEscapedString', Type::string()];
         yield ['lowercaseString', Type::string()];
         yield ['nonEmptyLowercaseString', Type::string()];
