@@ -17,6 +17,7 @@ use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyReadInfo;
 use Symfony\Component\PropertyInfo\PropertyWriteInfo;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\AdderRemoverDummy;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\AsymmetricVisibility;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\NotInstantiable;
@@ -684,5 +685,18 @@ class ReflectionExtractorTest extends TestCase
             ['dateTime', [new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTime')]],
             ['ddd', null],
         ];
+    }
+
+    /**
+     * @requires PHP 8.4
+     */
+    public function testAsymmetricVisibility()
+    {
+        $this->assertTrue($this->extractor->isReadable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertTrue($this->extractor->isReadable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($this->extractor->isReadable(AsymmetricVisibility::class, 'protectedPrivate'));
+        $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
     }
 }
