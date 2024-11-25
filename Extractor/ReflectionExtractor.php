@@ -580,6 +580,10 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
                 return false;
             }
 
+            if (\PHP_VERSION_ID >= 80400 && $writeAccessRequired && ($reflectionProperty->isProtectedSet() || $reflectionProperty->isPrivateSet())) {
+                return false;
+            }
+
             return (bool) ($reflectionProperty->getModifiers() & $this->propertyReflectionFlags);
         } catch (\ReflectionException) {
             // Return false if the property doesn't exist
