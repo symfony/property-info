@@ -36,8 +36,7 @@
     "conflict": {
         "phpdocumentor/reflection-docblock": "<5.2",
         "phpdocumentor/type-resolver": "<1.5.1",
-        "symfony/dependency-injection": "<5.4",
-        "symfony/serializer": "<6.4"
+        "symfony/dependency-injection": "<5.4"
     },
     "autoload": {
         "psr-4": { "Symfony\\Component\\PropertyInfo\\": "" },
