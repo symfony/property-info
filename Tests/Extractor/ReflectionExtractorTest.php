@@ -32,6 +32,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php81Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VirtualProperties;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\NullableType;
@@ -700,6 +701,69 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'publicPrivate'));
         $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'publicProtected'));
         $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
+    }
+
+    /**
+     * @requires PHP 8.4
+     */
+    public function testVirtualProperties()
+    {
+        $this->assertTrue($this->extractor->isReadable(VirtualProperties::class, 'virtualNoSetHook'));
+        $this->assertTrue($this->extractor->isReadable(VirtualProperties::class, 'virtualSetHookOnly'));
+        $this->assertTrue($this->extractor->isReadable(VirtualProperties::class, 'virtualHook'));
+        $this->assertFalse($this->extractor->isWritable(VirtualProperties::class, 'virtualNoSetHook'));
+        $this->assertTrue($this->extractor->isWritable(VirtualProperties::class, 'virtualSetHookOnly'));
+        $this->assertTrue($this->extractor->isWritable(VirtualProperties::class, 'virtualHook'));
+    }
+
+    /**
+     * @dataProvider provideAsymmetricVisibilityMutator
+     * @requires PHP 8.4
+     */
+    public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
+    {
+        $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
+        $readMutator = $extractor->getReadInfo(AsymmetricVisibility::class, $property);
+        $writeMutator = $extractor->getWriteInfo(AsymmetricVisibility::class, $property, [
+            'enable_getter_setter_extraction' => true,
+        ]);
+
+        $this->assertSame(PropertyReadInfo::TYPE_PROPERTY, $readMutator->getType());
+        $this->assertSame(PropertyWriteInfo::TYPE_PROPERTY, $writeMutator->getType());
+        $this->assertSame($readVisibility, $readMutator->getVisibility());
+        $this->assertSame($writeVisibility, $writeMutator->getVisibility());
+    }
+
+    public static function provideAsymmetricVisibilityMutator(): iterable
+    {
+        yield ['publicPrivate', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PRIVATE];
+        yield ['publicProtected', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PROTECTED];
+        yield ['protectedPrivate', PropertyReadInfo::VISIBILITY_PROTECTED, PropertyWriteInfo::VISIBILITY_PRIVATE];
+    }
+
+    /**
+     * @dataProvider provideVirtualPropertiesMutator
+     * @requires PHP 8.4
+     */
+    public function testVirtualPropertiesMutator(string $property, string $readVisibility, string $writeVisibility)
+    {
+        $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
+        $readMutator = $extractor->getReadInfo(VirtualProperties::class, $property);
+        $writeMutator = $extractor->getWriteInfo(VirtualProperties::class, $property, [
+            'enable_getter_setter_extraction' => true,
+        ]);
+
+        $this->assertSame(PropertyReadInfo::TYPE_PROPERTY, $readMutator->getType());
+        $this->assertSame(PropertyWriteInfo::TYPE_PROPERTY, $writeMutator->getType());
+        $this->assertSame($readVisibility, $readMutator->getVisibility());
+        $this->assertSame($writeVisibility, $writeMutator->getVisibility());
+    }
+
+    public static function provideVirtualPropertiesMutator(): iterable
+    {
+        yield ['virtualNoSetHook', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PRIVATE];
+        yield ['virtualSetHookOnly', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PUBLIC];
+        yield ['virtualHook', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PUBLIC];
     }
 
     /**
