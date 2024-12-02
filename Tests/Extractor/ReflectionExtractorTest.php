@@ -675,6 +675,51 @@ class ReflectionExtractorTest extends TestCase
     /**
      * @requires PHP 8.4
      */
+    public function testAsymmetricVisibilityAllowPublicOnly()
+    {
+        $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC);
+
+        $this->assertTrue($extractor->isReadable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertTrue($extractor->isReadable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'protectedPrivate'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
+    }
+
+    /**
+     * @requires PHP 8.4
+     */
+    public function testAsymmetricVisibilityAllowProtectedOnly()
+    {
+        $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PROTECTED);
+
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertTrue($extractor->isReadable(AsymmetricVisibility::class, 'protectedPrivate'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertTrue($extractor->isWritable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
+    }
+
+    /**
+     * @requires PHP 8.4
+     */
+    public function testAsymmetricVisibilityAllowPrivateOnly()
+    {
+        $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PRIVATE);
+
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertFalse($extractor->isReadable(AsymmetricVisibility::class, 'protectedPrivate'));
+        $this->assertTrue($extractor->isWritable(AsymmetricVisibility::class, 'publicPrivate'));
+        $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'publicProtected'));
+        $this->assertTrue($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
+    }
+
+    /**
+     * @requires PHP 8.4
+     */
     public function testVirtualProperties()
     {
         $this->assertTrue($this->extractor->isReadable(VirtualProperties::class, 'virtualNoSetHook'));
