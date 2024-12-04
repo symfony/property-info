@@ -718,6 +718,7 @@ class ReflectionExtractorTest extends TestCase
 
     /**
      * @dataProvider provideAsymmetricVisibilityMutator
+     *
      * @requires PHP 8.4
      */
     public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
@@ -743,6 +744,7 @@ class ReflectionExtractorTest extends TestCase
 
     /**
      * @dataProvider provideVirtualPropertiesMutator
+     *
      * @requires PHP 8.4
      */
     public function testVirtualPropertiesMutator(string $property, string $readVisibility, string $writeVisibility)
