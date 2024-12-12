@@ -179,7 +179,10 @@ final class PhpStanTypeHelper
             return match ($node->name) {
                 'integer',
                 'positive-int',
-                'negative-int' => [new Type(Type::BUILTIN_TYPE_INT)],
+                'negative-int',
+                'non-positive-int',
+                'non-negative-int',
+                'non-zero-int' => [new Type(Type::BUILTIN_TYPE_INT)],
                 'double' => [new Type(Type::BUILTIN_TYPE_FLOAT)],
                 'list',
                 'non-empty-list' => [new Type(Type::BUILTIN_TYPE_ARRAY, false, null, true, new Type(Type::BUILTIN_TYPE_INT))],

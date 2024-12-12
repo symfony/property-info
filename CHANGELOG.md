@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+7.3
+---
+
+ * Add support for `non-positive-int`, `non-negative-int` and `non-zero-int` PHPStan types to `PhpStanExtractor`
+
 7.1
 ---
 
