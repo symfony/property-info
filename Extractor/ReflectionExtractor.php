@@ -722,7 +722,7 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
                     return (bool) ($this->propertyReflectionFlags & \ReflectionProperty::IS_PRIVATE);
                 }
 
-                if (\PHP_VERSION_ID >= 80400 &&$reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
+                if (\PHP_VERSION_ID >= 80400 && $reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
                     return false;
                 }
             }
@@ -976,7 +976,7 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
 
             if ($reflectionProperty->isProtectedSet()) {
                 return PropertyWriteInfo::VISIBILITY_PROTECTED;
-           }
+            }
         }
 
         if ($reflectionProperty->isPrivate()) {
