@@ -38,8 +38,9 @@
         "doctrine/annotations": "<1.12",
         "phpdocumentor/reflection-docblock": "<5.2",
         "phpdocumentor/type-resolver": "<1.5.1",
-        "symfony/dependency-injection": "<5.4",
-        "symfony/dependency-injection": "<5.4|>=6.0,<6.4"
+        "symfony/dependency-injection": "<5.4|>=6.0,<6.4",
+        "symfony/cache": "<5.4",
+        "symfony/serializer": "<5.4"
     },
     "autoload": {
         "psr-4": { "Symfony\\Component\\PropertyInfo\\": "" },
