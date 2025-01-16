@@ -631,6 +631,17 @@ class ReflectionExtractorTest extends TestCase
         ];
     }
 
+    public function testDisabledAdderAndRemoverReturnsError()
+    {
+        $writeMutator = $this->extractor->getWriteInfo(Php71Dummy::class, 'baz', [
+            'enable_adder_remover_extraction' => false,
+        ]);
+
+        self::assertNotNull($writeMutator);
+        self::assertSame(PropertyWriteInfo::TYPE_NONE, $writeMutator->getType());
+        self::assertSame([\sprintf('The property "baz" in class "%s" can be defined with the methods "addBaz()", "removeBaz()" but the new value must be an array or an instance of \Traversable', Php71Dummy::class)], $writeMutator->getErrors());
+    }
+
     public function testGetWriteInfoReadonlyProperties()
     {
         $writeMutatorConstructor = $this->extractor->getWriteInfo(Php81Dummy::class, 'foo', ['enable_constructor_extraction' => true]);
