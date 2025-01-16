@@ -533,14 +533,14 @@ class ReflectionExtractorTest extends TestCase
 
     public function testNullOnPrivateProtectedAccessor()
     {
-        $barAcessor = $this->extractor->getReadInfo(Dummy::class, 'bar');
+        $barAccessor = $this->extractor->getReadInfo(Dummy::class, 'bar');
         $barMutator = $this->extractor->getWriteInfo(Dummy::class, 'bar');
-        $bazAcessor = $this->extractor->getReadInfo(Dummy::class, 'baz');
+        $bazAccessor = $this->extractor->getReadInfo(Dummy::class, 'baz');
         $bazMutator = $this->extractor->getWriteInfo(Dummy::class, 'baz');
 
-        $this->assertNull($barAcessor);
+        $this->assertNull($barAccessor);
         $this->assertEquals(PropertyWriteInfo::TYPE_NONE, $barMutator->getType());
-        $this->assertNull($bazAcessor);
+        $this->assertNull($bazAccessor);
         $this->assertEquals(PropertyWriteInfo::TYPE_NONE, $bazMutator->getType());
     }
 
@@ -563,19 +563,19 @@ class ReflectionExtractorTest extends TestCase
     public function testGetReadAccessor($class, $property, $found, $type, $name, $visibility, $static)
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
-        $readAcessor = $extractor->getReadInfo($class, $property);
+        $readAccessor = $extractor->getReadInfo($class, $property);
 
         if (!$found) {
-            $this->assertNull($readAcessor);
+            $this->assertNull($readAccessor);
 
             return;
         }
 
-        $this->assertNotNull($readAcessor);
-        $this->assertSame($type, $readAcessor->getType());
-        $this->assertSame($name, $readAcessor->getName());
-        $this->assertSame($visibility, $readAcessor->getVisibility());
-        $this->assertSame($static, $readAcessor->isStatic());
+        $this->assertNotNull($readAccessor);
+        $this->assertSame($type, $readAccessor->getType());
+        $this->assertSame($name, $readAccessor->getName());
+        $this->assertSame($visibility, $readAccessor->getVisibility());
+        $this->assertSame($static, $readAccessor->isStatic());
     }
 
     public static function readAccessorProvider(): array
