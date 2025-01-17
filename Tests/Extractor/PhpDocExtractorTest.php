@@ -37,6 +37,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentUsingTraitWith
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedPropertyDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\PromotedPropertiesWithDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\IFace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\InvalidDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy;
@@ -1156,6 +1157,23 @@ class PhpDocExtractorTest extends TestCase
         yield 'nested trait property' => [ClassUsingNestedTrait::class, 'innerSelfProp', ClassUsingNestedTrait::class];
         yield 'promoted property' => [ParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
         yield 'promoted property from child' => [ChildOfParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
+    }
+
+    #[DataProvider('providePromotedPropertyDocBlockTestCases')]
+    public function testPromotedPropertyDocBlock(string $class, string $property, ?string $shortDescription, ?string $longDescription, ?Type $type)
+    {
+        $this->assertSame($shortDescription, $this->extractor->getShortDescription($class, $property));
+        $this->assertSame($longDescription, $this->extractor->getLongDescription($class, $property));
+        $this->assertEquals($type, $this->extractor->getType($class, $property));
+    }
+
+    public static function providePromotedPropertyDocBlockTestCases(): iterable
+    {
+        yield 'description from constructor @param' => [PromotedPropertiesWithDocBlock::class, 'foo', 'Just a foo property', null, Type::string()];
+        yield 'promoted property with no docblock' => [PromotedPropertiesWithDocBlock::class, 'bar', null, null, null];
+        yield 'description and type from inline @var' => [PromotedPropertiesWithDocBlock::class, 'baz', 'A baz property', null, Type::string()];
+        yield 'inline @var wins over constructor @param' => [PromotedPropertiesWithDocBlock::class, 'qux', 'An overridden qux property', null, Type::int()];
+        yield 'long description from inline docblock' => [PromotedPropertiesWithDocBlock::class, 'corge', 'A corge property.', 'A detailed explanation of corge.', null];
     }
 }
 
