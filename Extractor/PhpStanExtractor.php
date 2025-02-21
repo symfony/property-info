@@ -24,14 +24,13 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
-use Symfony\Component\PropertyInfo\PhpStan\NameScope;
-use Symfony\Component\PropertyInfo\PhpStan\NameScopeFactory;
 use Symfony\Component\PropertyInfo\PropertyDescriptionExtractorInterface;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\PropertyInfo\Util\PhpStanTypeHelper;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\TypeContext\TypeContext;
 use Symfony\Component\TypeInfo\TypeContext\TypeContextFactory;
 use Symfony\Component\TypeInfo\TypeResolver\StringTypeResolver;
 
@@ -48,7 +47,6 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
 
     private PhpDocParser $phpDocParser;
     private Lexer $lexer;
-    private NameScopeFactory $nameScopeFactory;
 
     private StringTypeResolver $stringTypeResolver;
     private TypeContextFactory $typeContextFactory;
@@ -60,7 +58,7 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
     private array $accessorPrefixes;
     private array $arrayMutatorPrefixes;
 
-    /** @var array<string, NameScope> */
+    /** @var array<string, TypeContext> */
     private array $contexts = [];
 
     /**
@@ -91,7 +89,6 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
             $this->phpDocParser = new PhpDocParser(new TypeParser(new ConstExprParser()), new ConstExprParser());
             $this->lexer = new Lexer();
         }
-        $this->nameScopeFactory = new NameScopeFactory();
         $this->stringTypeResolver = new StringTypeResolver();
         $this->typeContextFactory = new TypeContextFactory($this->stringTypeResolver);
     }
@@ -133,8 +130,9 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
                 continue;
             }
 
-            $nameScope ??= $this->contexts[$class.'/'.$declaringClass] ??= $this->nameScopeFactory->create($class, $declaringClass);
-            foreach ($this->phpStanTypeHelper->getTypes($tagDocNode->value, $nameScope) as $type) {
+            $typeContext = $this->contexts[$class.'/'.$declaringClass] ??= $this->typeContextFactory->createFromClassName($class, $declaringClass);
+
+            foreach ($this->phpStanTypeHelper->getTypes($tagDocNode->value, $typeContext) as $type) {
                 switch ($type->getClassName()) {
                     case 'self':
                     case 'static':
@@ -177,7 +175,7 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
         }
 
         $types = [];
-        foreach ($this->phpStanTypeHelper->getTypes($tagDocNode, $this->nameScopeFactory->create($class)) as $type) {
+        foreach ($this->phpStanTypeHelper->getTypes($tagDocNode, $this->typeContextFactory->createFromClassName($class)) as $type) {
             $types[] = $type;
         }
 
