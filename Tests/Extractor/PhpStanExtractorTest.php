@@ -694,6 +694,7 @@ class PhpStanExtractorTest extends TestCase
         yield 'stat' => ['stat'];
         yield 'foo' => ['foo'];
         yield 'bar' => ['bar'];
+        yield 'baz' => ['baz'];
     }
 
     /**
