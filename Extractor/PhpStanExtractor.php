@@ -18,6 +18,8 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -207,7 +209,7 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
         $types = [];
 
         foreach ($docNode->getTagsByName($tag) as $tagDocNode) {
-            if ($tagDocNode->value instanceof InvalidTagValueNode) {
+            if (!$tagDocNode->value instanceof ParamTagValueNode && !$tagDocNode->value instanceof ReturnTagValueNode && !$tagDocNode->value instanceof VarTagValueNode) {
                 continue;
             }
 
