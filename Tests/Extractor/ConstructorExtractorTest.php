@@ -12,7 +12,7 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Symfony\Bridge\PhpUnit\ExpectUserDeprecationMessageTrait;
 use Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyExtractor;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
@@ -23,7 +23,7 @@ use Symfony\Component\TypeInfo\Type;
  */
 class ConstructorExtractorTest extends TestCase
 {
-    use ExpectDeprecationTrait;
+    use ExpectUserDeprecationMessageTrait;
 
     private ConstructorExtractor $extractor;
 
@@ -53,7 +53,7 @@ class ConstructorExtractorTest extends TestCase
      */
     public function testGetTypes()
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');
 
         $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_STRING)], $this->extractor->getTypes('Foo', 'bar', []));
     }
@@ -63,7 +63,7 @@ class ConstructorExtractorTest extends TestCase
      */
     public function testGetTypesIfNoExtractors()
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::getType()" instead.');
 
         $extractor = new ConstructorExtractor([]);
         $this->assertNull($extractor->getTypes('Foo', 'bar', []));

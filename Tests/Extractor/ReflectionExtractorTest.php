@@ -12,7 +12,7 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Symfony\Bridge\PhpUnit\ExpectUserDeprecationMessageTrait;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyReadInfo;
 use Symfony\Component\PropertyInfo\PropertyWriteInfo;
@@ -43,7 +43,7 @@ use Symfony\Component\TypeInfo\Type\NullableType;
  */
 class ReflectionExtractorTest extends TestCase
 {
-    use ExpectDeprecationTrait;
+    use ExpectUserDeprecationMessageTrait;
 
     private ReflectionExtractor $extractor;
 
@@ -230,7 +230,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractorsLegacy($property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', $property, []));
     }
@@ -261,7 +261,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractPhp7TypeLegacy(string $class, string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes($class, $property, []));
     }
@@ -286,7 +286,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractPhp71TypeLegacy($property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php71Dummy', $property, []));
     }
@@ -309,7 +309,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractPhp80TypeLegacy(string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy', $property, []));
     }
@@ -335,7 +335,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractPhp81TypeLegacy(string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php81Dummy', $property, []));
     }
@@ -360,7 +360,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractPhp82TypeLegacy(string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy', $property, []));
     }
@@ -383,7 +383,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractWithDefaultValueLegacy($property, $type)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypes(DefaultValue::class, $property, []));
     }
@@ -528,7 +528,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractTypeConstructorLegacy(string $class, string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         /* Check that constructor extractions works by default, and if passed in via context.
            Check that null is returned if constructor extraction is disabled */
@@ -568,7 +568,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testTypedPropertiesLegacy()
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
 
         $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)], $this->extractor->getTypes(Php74Dummy::class, 'dummy'));
         $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_BOOL, true)], $this->extractor->getTypes(Php74Dummy::class, 'nullableBoolProp'));
@@ -708,7 +708,7 @@ class ReflectionExtractorTest extends TestCase
      */
     public function testExtractConstructorTypesLegacy(string $property, ?array $type = null)
     {
-        $this->expectDeprecation('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypesFromConstructor()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypeFromConstructor()" instead.');
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypesFromConstructor()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypeFromConstructor()" instead.');
 
         $this->assertEquals($type, $this->extractor->getTypesFromConstructor('Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy', $property));
     }
