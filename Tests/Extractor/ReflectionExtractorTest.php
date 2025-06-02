@@ -12,7 +12,6 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectUserDeprecationMessageTrait;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyReadInfo;
 use Symfony\Component\PropertyInfo\PropertyWriteInfo;
@@ -34,7 +33,6 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php81Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\VirtualProperties;
-use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\NullableType;
 
@@ -43,8 +41,6 @@ use Symfony\Component\TypeInfo\Type\NullableType;
  */
 class ReflectionExtractorTest extends TestCase
 {
-    use ExpectUserDeprecationMessageTrait;
-
     private ReflectionExtractor $extractor;
 
     protected function setUp(): void
@@ -223,180 +219,9 @@ class ReflectionExtractorTest extends TestCase
         );
     }
 
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyTypes
-     */
-    public function testExtractorsLegacy($property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', $property, []));
-    }
-
-    public static function provideLegacyTypes()
-    {
-        return [
-            ['a', null],
-            ['b', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, true, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy')]],
-            ['c', [new LegacyType(LegacyType::BUILTIN_TYPE_BOOL)]],
-            ['d', [new LegacyType(LegacyType::BUILTIN_TYPE_BOOL)]],
-            ['e', null],
-            ['f', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeImmutable'))]],
-            ['donotexist', null],
-            ['staticGetter', null],
-            ['staticSetter', null],
-            ['self', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy')]],
-            ['realParent', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy')]],
-            ['date', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, \DateTimeImmutable::class)]],
-            ['dates', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, \DateTimeImmutable::class))]],
-        ];
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyPhp7Types
-     */
-    public function testExtractPhp7TypeLegacy(string $class, string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes($class, $property, []));
-    }
-
-    public static function provideLegacyPhp7Types()
-    {
-        return [
-            [Php7Dummy::class, 'foo', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true)]],
-            [Php7Dummy::class, 'bar', [new LegacyType(LegacyType::BUILTIN_TYPE_INT)]],
-            [Php7Dummy::class, 'baz', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_STRING))]],
-            [Php7Dummy::class, 'buz', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\Php7Dummy')]],
-            [Php7Dummy::class, 'biz', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Php7ParentDummy::class)]],
-            [Php7Dummy::class, 'donotexist', null],
-            [Php7ParentDummy::class, 'parent', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, \stdClass::class)]],
-        ];
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyPhp71Types
-     */
-    public function testExtractPhp71TypeLegacy($property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php71Dummy', $property, []));
-    }
-
-    public static function provideLegacyPhp71Types()
-    {
-        return [
-            ['foo', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, true, null, true)]],
-            ['buz', [new LegacyType(LegacyType::BUILTIN_TYPE_NULL)]],
-            ['bar', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, true)]],
-            ['baz', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_STRING))]],
-            ['donotexist', null],
-        ];
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyPhp80Types
-     */
-    public function testExtractPhp80TypeLegacy(string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy', $property, []));
-    }
-
-    public static function provideLegacyPhp80Types()
-    {
-        return [
-            ['foo', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, true, null, true)]],
-            ['bar', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, true)]],
-            ['timeout', [new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_FLOAT)]],
-            ['optional', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, true), new LegacyType(LegacyType::BUILTIN_TYPE_FLOAT, true)]],
-            ['string', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Stringable'), new LegacyType(LegacyType::BUILTIN_TYPE_STRING)]],
-            ['payload', null],
-            ['data', null],
-            ['mixedProperty', null],
-        ];
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyPhp81Types
-     */
-    public function testExtractPhp81TypeLegacy(string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php81Dummy', $property, []));
-    }
-
-    public static function provideLegacyPhp81Types()
-    {
-        return [
-            ['nothing', null],
-            ['collection', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Traversable'), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Countable')]],
-        ];
-    }
-
     public function testReadonlyPropertiesAreNotWriteable()
     {
         $this->assertFalse($this->extractor->isWritable(Php81Dummy::class, 'foo'));
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyPhp82Types
-     */
-    public function testExtractPhp82TypeLegacy(string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy', $property, []));
-    }
-
-    public static function provideLegacyPhp82Types(): iterable
-    {
-        yield ['nil', null];
-        yield ['false', [new LegacyType(LegacyType::BUILTIN_TYPE_FALSE)]];
-        yield ['true', [new LegacyType(LegacyType::BUILTIN_TYPE_TRUE)]];
-
-        // Nesting intersection and union types is not supported yet,
-        // but we should make sure this kind of composite types does not crash the extractor.
-        yield ['someCollection', null];
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyDefaultValue
-     */
-    public function testExtractWithDefaultValueLegacy($property, $type)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypes(DefaultValue::class, $property, []));
-    }
-
-    public static function provideLegacyDefaultValue()
-    {
-        return [
-            ['defaultInt', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, false)]],
-            ['defaultFloat', [new LegacyType(LegacyType::BUILTIN_TYPE_FLOAT, false)]],
-            ['defaultString', [new LegacyType(LegacyType::BUILTIN_TYPE_STRING, false)]],
-            ['defaultArray', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true)]],
-            ['defaultNull', null],
-        ];
     }
 
     /**
@@ -521,35 +346,6 @@ class ReflectionExtractorTest extends TestCase
         ];
     }
 
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyConstructorTypes
-     */
-    public function testExtractTypeConstructorLegacy(string $class, string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        /* Check that constructor extractions works by default, and if passed in via context.
-           Check that null is returned if constructor extraction is disabled */
-        $this->assertEquals($type, $this->extractor->getTypes($class, $property, []));
-        $this->assertEquals($type, $this->extractor->getTypes($class, $property, ['enable_constructor_extraction' => true]));
-        $this->assertNull($this->extractor->getTypes($class, $property, ['enable_constructor_extraction' => false]));
-    }
-
-    public static function provideLegacyConstructorTypes(): array
-    {
-        return [
-            // php71 dummy has following constructor: __construct(string $string, int $intPrivate)
-            [Php71Dummy::class, 'string', [new LegacyType(LegacyType::BUILTIN_TYPE_STRING, false)]],
-            [Php71Dummy::class, 'intPrivate', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, false)]],
-            // Php71DummyExtended2 adds int $intWithAccessor
-            [Php71DummyExtended2::class, 'intWithAccessor', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, false)]],
-            [Php71DummyExtended2::class, 'intPrivate', [new LegacyType(LegacyType::BUILTIN_TYPE_INT, false)]],
-            [DefaultValue::class, 'foo', null],
-        ];
-    }
-
     public function testNullOnPrivateProtectedAccessor()
     {
         $barAccessor = $this->extractor->getReadInfo(Dummy::class, 'bar');
@@ -561,21 +357,6 @@ class ReflectionExtractorTest extends TestCase
         $this->assertEquals(PropertyWriteInfo::TYPE_NONE, $barMutator->getType());
         $this->assertNull($bazAccessor);
         $this->assertEquals(PropertyWriteInfo::TYPE_NONE, $bazMutator->getType());
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testTypedPropertiesLegacy()
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getType()" instead.');
-
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)], $this->extractor->getTypes(Php74Dummy::class, 'dummy'));
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_BOOL, true)], $this->extractor->getTypes(Php74Dummy::class, 'nullableBoolProp'));
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_STRING))], $this->extractor->getTypes(Php74Dummy::class, 'stringCollection'));
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_INT, true)], $this->extractor->getTypes(Php74Dummy::class, 'nullableWithDefault'));
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true)], $this->extractor->getTypes(Php74Dummy::class, 'collection'));
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, true, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class))], $this->extractor->getTypes(Php74Dummy::class, 'nullableTypedCollection'));
     }
 
     /**
@@ -699,29 +480,6 @@ class ReflectionExtractorTest extends TestCase
 
         $this->assertSame(PropertyWriteInfo::TYPE_CONSTRUCTOR, $writeMutatorConstructor->getType());
         $this->assertSame(PropertyWriteInfo::TYPE_NONE, $writeMutatorWithoutConstructor->getType());
-    }
-
-    /**
-     * @group legacy
-     *
-     * @dataProvider provideLegacyExtractConstructorTypes
-     */
-    public function testExtractConstructorTypesLegacy(string $property, ?array $type = null)
-    {
-        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypesFromConstructor()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::getTypeFromConstructor()" instead.');
-
-        $this->assertEquals($type, $this->extractor->getTypesFromConstructor('Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy', $property));
-    }
-
-    public static function provideLegacyExtractConstructorTypes(): array
-    {
-        return [
-            ['timezone', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeZone')]],
-            ['date', null],
-            ['dateObject', null],
-            ['dateTime', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeImmutable')]],
-            ['ddd', null],
-        ];
     }
 
     public function testAsymmetricVisibility()
