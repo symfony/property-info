@@ -723,15 +723,15 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
                     return false;
                 }
 
-                if (\PHP_VERSION_ID >= 80400 && $reflectionProperty->isProtectedSet()) {
+                if ($reflectionProperty->isProtectedSet()) {
                     return (bool) ($this->propertyReflectionFlags & \ReflectionProperty::IS_PROTECTED);
                 }
 
-                if (\PHP_VERSION_ID >= 80400 && $reflectionProperty->isPrivateSet()) {
+                if ($reflectionProperty->isPrivateSet()) {
                     return (bool) ($this->propertyReflectionFlags & \ReflectionProperty::IS_PRIVATE);
                 }
 
-                if (\PHP_VERSION_ID >= 80400 && $reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
+                if ($reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
                     return false;
                 }
             }
@@ -974,18 +974,16 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
 
     private function getWriteVisibilityForProperty(\ReflectionProperty $reflectionProperty): string
     {
-        if (\PHP_VERSION_ID >= 80400) {
-            if ($reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
-                return PropertyWriteInfo::VISIBILITY_PRIVATE;
-            }
+        if ($reflectionProperty->isVirtual() && !$reflectionProperty->hasHook(\PropertyHookType::Set)) {
+            return PropertyWriteInfo::VISIBILITY_PRIVATE;
+        }
 
-            if ($reflectionProperty->isPrivateSet()) {
-                return PropertyWriteInfo::VISIBILITY_PRIVATE;
-            }
+        if ($reflectionProperty->isPrivateSet()) {
+            return PropertyWriteInfo::VISIBILITY_PRIVATE;
+        }
 
-            if ($reflectionProperty->isProtectedSet()) {
-                return PropertyWriteInfo::VISIBILITY_PROTECTED;
-            }
+        if ($reflectionProperty->isProtectedSet()) {
+            return PropertyWriteInfo::VISIBILITY_PROTECTED;
         }
 
         if ($reflectionProperty->isPrivate()) {

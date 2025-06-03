@@ -724,9 +724,6 @@ class ReflectionExtractorTest extends TestCase
         ];
     }
 
-    /**
-     * @requires PHP 8.4
-     */
     public function testAsymmetricVisibility()
     {
         $this->assertTrue($this->extractor->isReadable(AsymmetricVisibility::class, 'publicPrivate'));
@@ -737,9 +734,6 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($this->extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
     }
 
-    /**
-     * @requires PHP 8.4
-     */
     public function testAsymmetricVisibilityAllowPublicOnly()
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC);
@@ -752,9 +746,6 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
     }
 
-    /**
-     * @requires PHP 8.4
-     */
     public function testAsymmetricVisibilityAllowProtectedOnly()
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PROTECTED);
@@ -767,9 +758,6 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
     }
 
-    /**
-     * @requires PHP 8.4
-     */
     public function testAsymmetricVisibilityAllowPrivateOnly()
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PRIVATE);
@@ -782,9 +770,6 @@ class ReflectionExtractorTest extends TestCase
         $this->assertTrue($extractor->isWritable(AsymmetricVisibility::class, 'protectedPrivate'));
     }
 
-    /**
-     * @requires PHP 8.4
-     */
     public function testVirtualProperties()
     {
         $this->assertTrue($this->extractor->isReadable(VirtualProperties::class, 'virtualNoSetHook'));
@@ -797,8 +782,6 @@ class ReflectionExtractorTest extends TestCase
 
     /**
      * @dataProvider provideAsymmetricVisibilityMutator
-     *
-     * @requires PHP 8.4
      */
     public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
     {
@@ -823,8 +806,6 @@ class ReflectionExtractorTest extends TestCase
 
     /**
      * @dataProvider provideVirtualPropertiesMutator
-     *
-     * @requires PHP 8.4
      */
     public function testVirtualPropertiesMutator(string $property, string $readVisibility, string $writeVisibility)
     {
