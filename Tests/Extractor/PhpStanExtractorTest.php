@@ -357,7 +357,7 @@ class PhpStanExtractorTest extends TestCase
             Type::object(ParentDummy::class),
             Type::null(),
         )];
-        yield ['f', null];
+        yield ['f', Type::union(Type::string(), Type::null())];
         yield ['g', Type::array(Type::union(Type::string(), Type::int()))];
     }
 
