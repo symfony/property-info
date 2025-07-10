@@ -58,6 +58,6 @@ class SerializerExtractorTest extends TestCase
 
     public function testGetPropertiesWithNonExistentClassReturnsNull()
     {
-        $this->assertSame(null, $this->extractor->getProperties('NonExistent'));
+        $this->assertNull($this->extractor->getProperties('NonExistent'));
     }
 }

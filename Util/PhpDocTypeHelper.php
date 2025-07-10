@@ -118,7 +118,7 @@ final class PhpDocTypeHelper
 
             [$phpType, $class] = $this->getPhpTypeAndClass((string) $fqsen);
 
-            $collection = \is_a($class, \Traversable::class, true) || \is_a($class, \ArrayAccess::class, true);
+            $collection = is_a($class, \Traversable::class, true) || is_a($class, \ArrayAccess::class, true);
 
             // it's safer to fall back to other extractors if the generic type is too abstract
             if (!$collection && !class_exists($class)) {
