@@ -30,7 +30,7 @@ class PropertyInfoExtractorTest extends AbstractPropertyInfoExtractorTest
      */
     public function testNestedExtractorWithoutGetTypeImplementation(string $property, ?Type $expectedType)
     {
-        $propertyInfoExtractor = new PropertyInfoExtractor([], [new class() implements PropertyTypeExtractorInterface {
+        $propertyInfoExtractor = new PropertyInfoExtractor([], [new class implements PropertyTypeExtractorInterface {
             private PropertyTypeExtractorInterface $propertyTypeExtractor;
 
             public function __construct()
