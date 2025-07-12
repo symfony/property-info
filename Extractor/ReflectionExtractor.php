@@ -563,7 +563,7 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
             return $this->extractFromReflectionType($reflectionType, $reflectionMethod->getDeclaringClass());
         }
 
-        if (\in_array($prefix, ['is', 'can', 'has'])) {
+        if (\in_array($prefix, ['is', 'can', 'has'], true)) {
             return [new LegacyType(LegacyType::BUILTIN_TYPE_BOOL)];
         }
 
