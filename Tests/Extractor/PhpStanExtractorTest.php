@@ -375,14 +375,7 @@ class PhpStanExtractorTest extends TestCase
     public static function pseudoTypesProvider(): iterable
     {
         yield ['classString', Type::string()];
-
-        // BC layer for type-info < 7.2
-        if (!interface_exists(WrappingTypeInterface::class)) {
-            yield ['classStringGeneric', Type::generic(Type::string(), Type::object(\stdClass::class))];
-        } else {
-            yield ['classStringGeneric', Type::string()];
-        }
-
+        yield ['classStringGeneric', Type::string()];
         yield ['htmlEscapedString', Type::string()];
         yield ['lowercaseString', Type::string()];
         yield ['nonEmptyLowercaseString', Type::string()];

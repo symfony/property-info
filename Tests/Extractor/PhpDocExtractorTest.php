@@ -104,14 +104,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['f', Type::list(Type::object(\DateTimeImmutable::class)), null, null];
         yield ['g', Type::nullable(Type::array()), 'Nullable array.', null];
         yield ['h', Type::nullable(Type::string()), null, null];
-
-        // BC layer for type-info < 7.2
-        if (!class_exists(NullableType::class)) {
-            yield ['i', Type::union(Type::int(), Type::string(), Type::null()), null, null];
-        } else {
-            yield ['i', Type::nullable(Type::union(Type::int(), Type::string())), null, null];
-        }
-
+        yield ['i', Type::nullable(Type::union(Type::int(), Type::string())), null, null];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class)), null, null];
         yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int())), null, null];
         yield ['donotexist', null, null, null];
@@ -178,14 +171,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['f', null];
         yield ['g', Type::nullable(Type::array())];
         yield ['h', Type::nullable(Type::string())];
-
-        // BC layer for type-info < 7.2
-        if (!class_exists(NullableType::class)) {
-            yield ['i', Type::union(Type::int(), Type::string(), Type::null())];
-        } else {
-            yield ['i', Type::nullable(Type::union(Type::int(), Type::string()))];
-        }
-
+        yield ['i', Type::nullable(Type::union(Type::int(), Type::string()))];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class))];
         yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int()))];
         yield ['donotexist', null];
@@ -249,14 +235,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['f', Type::list(Type::object(\DateTimeImmutable::class))];
         yield ['g', Type::nullable(Type::array())];
         yield ['h', Type::nullable(Type::string())];
-
-        // BC layer for type-info < 7.2
-        if (!class_exists(NullableType::class)) {
-            yield ['i', Type::union(Type::int(), Type::string(), Type::null())];
-        } else {
-            yield ['i', Type::nullable(Type::union(Type::int(), Type::string()))];
-        }
-
+        yield ['i', Type::nullable(Type::union(Type::int(), Type::string()))];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class))];
         yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int()))];
         yield ['nonNullableCollectionOfNullableElements', Type::list(Type::nullable(Type::int()))];
