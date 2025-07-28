@@ -180,7 +180,7 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
     }
 
     /**
-     * A docblock is splitted into a template marker, a short description, an optional long description and a tags section.
+     * A docblock is split into a template marker, a short description, an optional long description and a tags section.
      *
      * - The template marker is either empty, or #@+ or #@-.
      * - The short description is started from a non-tag character, and until one or multiple newlines.
