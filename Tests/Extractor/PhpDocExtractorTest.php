@@ -530,9 +530,7 @@ class PhpDocExtractorTest extends TestCase
         $this->assertNull($this->extractor->getType(OmittedParamTagTypeDocBlock::class, 'omittedType'));
     }
 
-    /**
-     * @dataProvider typeProvider
-     */
+    #[DataProvider('typeProvider')]
     public function testExtract(string $property, ?Type $type, ?string $shortDescription, ?string $longDescription)
     {
         $this->assertEquals($type, $this->extractor->getType(Dummy::class, $property));
@@ -592,9 +590,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['collectionAsObject', Type::collection(Type::object(DummyCollection::class), Type::string(), Type::int()), null, null];
     }
 
-    /**
-     * @dataProvider invalidTypeProvider
-     */
+    #[DataProvider('invalidTypeProvider')]
     public function testInvalid(string $property, ?string $shortDescription, ?string $longDescription)
     {
         $this->assertNull($this->extractor->getType(InvalidDummy::class, $property));
@@ -612,9 +608,7 @@ class PhpDocExtractorTest extends TestCase
         yield 'bar' => ['bar', 'Bar.', null];
     }
 
-    /**
-     * @dataProvider typeWithNoPrefixesProvider
-     */
+    #[DataProvider('typeWithNoPrefixesProvider')]
     public function testExtractTypesWithNoPrefixes(string $property, ?Type $type)
     {
         $noPrefixExtractor = new PhpDocExtractor(null, [], [], []);
@@ -660,9 +654,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['staticSetter', null];
     }
 
-    /**
-     * @dataProvider provideCollectionTypes
-     */
+    #[DataProvider('provideCollectionTypes')]
     public function testExtractCollection(string $property, ?Type $type)
     {
         $this->testExtract($property, $type, null, null);
@@ -680,9 +672,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['arrayWithKeysAndComplexValue', Type::dict(Type::nullable(Type::array(Type::nullable(Type::string()), Type::int()))), null, null];
     }
 
-    /**
-     * @dataProvider typeWithCustomPrefixesProvider
-     */
+    #[DataProvider('typeWithCustomPrefixesProvider')]
     public function testExtractTypeWithCustomPrefixes(string $property, ?Type $type)
     {
         $customExtractor = new PhpDocExtractor(null, ['add', 'remove'], ['is', 'can']);
@@ -733,9 +723,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['staticSetter', null];
     }
 
-    /**
-     * @dataProvider dockBlockFallbackTypesProvider
-     */
+    #[DataProvider('dockBlockFallbackTypesProvider')]
     public function testDocBlockFallback(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(DockBlockFallback::class, $property));
@@ -751,9 +739,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['protMut', Type::bool()];
     }
 
-    /**
-     * @dataProvider propertiesDefinedByTraitsProvider
-     */
+    #[DataProvider('propertiesDefinedByTraitsProvider')]
     public function testPropertiesDefinedByTraits(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(DummyUsingTrait::class, $property));
@@ -772,9 +758,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['propertyInExternalTraitObjectDifferentNamespace', Type::object(DummyUsedInTrait::class)];
     }
 
-    /**
-     * @dataProvider methodsDefinedByTraitsProvider
-     */
+    #[DataProvider('methodsDefinedByTraitsProvider')]
     public function testMethodsDefinedByTraits(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(DummyUsingTrait::class, $property));
@@ -795,9 +779,8 @@ class PhpDocExtractorTest extends TestCase
 
     /**
      * @param class-string $class
-     *
-     * @dataProvider propertiesStaticTypeProvider
      */
+    #[DataProvider('propertiesStaticTypeProvider')]
     public function testPropertiesStaticType(string $class, string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType($class, $property));
@@ -814,9 +797,8 @@ class PhpDocExtractorTest extends TestCase
 
     /**
      * @param class-string $class
-     *
-     * @dataProvider propertiesParentTypeProvider
      */
+    #[DataProvider('propertiesParentTypeProvider')]
     public function testPropertiesParentType(string $class, string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType($class, $property));
@@ -836,9 +818,7 @@ class PhpDocExtractorTest extends TestCase
         $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'unknownPseudoType'));
     }
 
-    /**
-     * @dataProvider constructorTypesProvider
-     */
+    #[DataProvider('constructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getTypeFromConstructor(ConstructorDummy::class, $property));
@@ -857,9 +837,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['mixed', Type::mixed()];
     }
 
-    /**
-     * @dataProvider pseudoTypeProvider
-     */
+    #[DataProvider('pseudoTypeProvider')]
     public function testPseudoType(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(PseudoTypesDummy::class, $property));
@@ -881,9 +859,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['positiveInt', Type::int()];
     }
 
-    /**
-     * @dataProvider promotedPropertyProvider
-     */
+    #[DataProvider('promotedPropertyProvider')]
     public function testExtractPromotedProperty(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Php80Dummy::class, $property));
