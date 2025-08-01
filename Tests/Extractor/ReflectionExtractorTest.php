@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyReadInfo;
@@ -34,7 +35,6 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\VirtualProperties;
 use Symfony\Component\TypeInfo\Type;
-use Symfony\Component\TypeInfo\Type\NullableType;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>

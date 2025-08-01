@@ -12,6 +12,9 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use phpDocumentor\Reflection\DocBlock;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy;
