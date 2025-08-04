@@ -224,9 +224,7 @@ class ReflectionExtractorTest extends TestCase
         $this->assertFalse($this->extractor->isWritable(Php81Dummy::class, 'foo'));
     }
 
-    /**
-     * @dataProvider getReadableProperties
-     */
+    #[DataProvider('getReadableProperties')]
     public function testIsReadable($property, $expected)
     {
         $this->assertSame(
@@ -255,9 +253,7 @@ class ReflectionExtractorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getWritableProperties
-     */
+    #[DataProvider('getWritableProperties')]
     public function testIsWritable($property, $expected)
     {
         $this->assertSame(
@@ -326,9 +322,7 @@ class ReflectionExtractorTest extends TestCase
         $this->assertTrue($protectedExtractor->isReadable(Dummy::class, 'baz'));
     }
 
-    /**
-     * @dataProvider getInitializableProperties
-     */
+    #[DataProvider('getInitializableProperties')]
     public function testIsInitializable(string $class, string $property, bool $expected)
     {
         $this->assertSame($expected, $this->extractor->isInitializable($class, $property));
@@ -359,9 +353,7 @@ class ReflectionExtractorTest extends TestCase
         $this->assertEquals(PropertyWriteInfo::TYPE_NONE, $bazMutator->getType());
     }
 
-    /**
-     * @dataProvider readAccessorProvider
-     */
+    #[DataProvider('readAccessorProvider')]
     public function testGetReadAccessor($class, $property, $found, $type, $name, $visibility, $static)
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
@@ -394,9 +386,7 @@ class ReflectionExtractorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider writeMutatorProvider
-     */
+    #[DataProvider('writeMutatorProvider')]
     public function testGetWriteMutator($class, $property, $allowConstruct, $found, $type, $name, $addName, $removeName, $visibility, $static)
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
@@ -538,9 +528,7 @@ class ReflectionExtractorTest extends TestCase
         $this->assertTrue($this->extractor->isWritable(VirtualProperties::class, 'virtualHook'));
     }
 
-    /**
-     * @dataProvider provideAsymmetricVisibilityMutator
-     */
+    #[DataProvider('provideAsymmetricVisibilityMutator')]
     public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
@@ -562,9 +550,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['protectedPrivate', PropertyReadInfo::VISIBILITY_PROTECTED, PropertyWriteInfo::VISIBILITY_PRIVATE];
     }
 
-    /**
-     * @dataProvider provideVirtualPropertiesMutator
-     */
+    #[DataProvider('provideVirtualPropertiesMutator')]
     public function testVirtualPropertiesMutator(string $property, string $readVisibility, string $writeVisibility)
     {
         $extractor = new ReflectionExtractor(null, null, null, true, ReflectionExtractor::ALLOW_PUBLIC | ReflectionExtractor::ALLOW_PROTECTED | ReflectionExtractor::ALLOW_PRIVATE);
@@ -586,9 +572,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['virtualHook', PropertyReadInfo::VISIBILITY_PUBLIC, PropertyWriteInfo::VISIBILITY_PUBLIC];
     }
 
-    /**
-     * @dataProvider typesProvider
-     */
+    #[DataProvider('typesProvider')]
     public function testExtractors(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Dummy::class, $property));
@@ -612,9 +596,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['dates', Type::list(Type::object(\DateTimeImmutable::class))];
     }
 
-    /**
-     * @dataProvider php7TypesProvider
-     */
+    #[DataProvider('php7TypesProvider')]
     public function testExtractPhp7Type(string $class, string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType($class, $property));
@@ -634,9 +616,7 @@ class ReflectionExtractorTest extends TestCase
         yield [Php7ParentDummy::class, 'parent', Type::object(\stdClass::class)];
     }
 
-    /**
-     * @dataProvider php71TypesProvider
-     */
+    #[DataProvider('php71TypesProvider')]
     public function testExtractPhp71Type(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Php71Dummy::class, $property));
@@ -654,9 +634,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['donotexist', null];
     }
 
-    /**
-     * @dataProvider php80TypesProvider
-     */
+    #[DataProvider('php80TypesProvider')]
     public function testExtractPhp80Type(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Php80Dummy::class, $property));
@@ -677,9 +655,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['mixedProperty', Type::mixed()];
     }
 
-    /**
-     * @dataProvider php81TypesProvider
-     */
+    #[DataProvider('php81TypesProvider')]
     public function testExtractPhp81Type(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Php81Dummy::class, $property));
@@ -694,9 +670,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['collection', Type::intersection(Type::object(\Traversable::class), Type::object(\Countable::class))];
     }
 
-    /**
-     * @dataProvider php82TypesProvider
-     */
+    #[DataProvider('php82TypesProvider')]
     public function testExtractPhp82Type(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(Php82Dummy::class, $property));
@@ -713,9 +687,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['someCollection', Type::union(Type::intersection(Type::object(\Traversable::class), Type::object(\Countable::class)), Type::null())];
     }
 
-    /**
-     * @dataProvider defaultValueProvider
-     */
+    #[DataProvider('defaultValueProvider')]
     public function testExtractWithDefaultValue(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getType(DefaultValue::class, $property));
@@ -733,9 +705,7 @@ class ReflectionExtractorTest extends TestCase
         yield ['defaultNull', null];
     }
 
-    /**
-     * @dataProvider constructorTypesProvider
-     */
+    #[DataProvider('constructorTypesProvider')]
     public function testExtractTypeConstructor(string $class, string $property, ?Type $type)
     {
         /* Check that constructor extractions works by default, and if passed in via context.
@@ -771,9 +741,7 @@ class ReflectionExtractorTest extends TestCase
         $this->assertEquals(Type::nullable(Type::list(Type::object(Dummy::class))), $this->extractor->getType(Php74Dummy::class, 'nullableTypedCollection'));
     }
 
-    /**
-     * @dataProvider extractConstructorTypesProvider
-     */
+    #[DataProvider('extractConstructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)
     {
         $this->assertEquals($type, $this->extractor->getTypeFromConstructor(ConstructorDummy::class, $property));
