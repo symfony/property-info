@@ -79,7 +79,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     public function getShortDescription(string $class, string $property, array $context = []): ?string
     {
-        /** @var DocBlock $docBlock */
         [$docBlock] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
@@ -106,7 +105,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     public function getLongDescription(string $class, string $property, array $context = []): ?string
     {
-        /** @var DocBlock $docBlock */
         [$docBlock] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
