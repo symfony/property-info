@@ -80,7 +80,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     public function getShortDescription(string $class, string $property, array $context = []): ?string
     {
-        /** @var DocBlock $docBlock */
         [$docBlock] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
@@ -107,7 +106,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     public function getLongDescription(string $class, string $property, array $context = []): ?string
     {
-        /** @var DocBlock $docBlock */
         [$docBlock] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
@@ -125,7 +123,6 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
     {
         trigger_deprecation('symfony/property-info', '7.3', 'The "%s()" method is deprecated, use "%s::getType()" instead.', __METHOD__, self::class);
 
-        /** @var DocBlock $docBlock */
         [$docBlock, $source, $prefix] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
