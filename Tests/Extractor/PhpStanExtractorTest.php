@@ -70,7 +70,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['foo2', Type::float()];
         yield ['foo3', Type::callable()];
         yield ['foo5', Type::mixed()];
-        yield ['files', Type::union(Type::list(Type::object(\SplFileInfo::class)), Type::resource()), null, null];
+        yield ['files', Type::union(Type::list(Type::object(\SplFileInfo::class)), Type::resource())];
         yield ['bal', Type::object(\DateTimeImmutable::class)];
         yield ['parent', Type::object(ParentDummy::class)];
         yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
@@ -178,8 +178,8 @@ class PhpStanExtractorTest extends TestCase
         yield ['iteratorCollection', Type::collection(Type::object(\Iterator::class), Type::string())];
         yield ['iteratorCollectionWithKey', Type::collection(Type::object(\Iterator::class), Type::string(), Type::int())];
         yield ['nestedIterators', Type::collection(Type::object(\Iterator::class), Type::collection(Type::object(\Iterator::class), Type::string(), Type::int()), Type::int())];
-        yield ['arrayWithKeys', Type::dict(Type::string()), null, null];
-        yield ['arrayWithKeysAndComplexValue', Type::dict(Type::nullable(Type::array(Type::nullable(Type::string()), Type::int()))), null, null];
+        yield ['arrayWithKeys', Type::dict(Type::string())];
+        yield ['arrayWithKeysAndComplexValue', Type::dict(Type::nullable(Type::array(Type::nullable(Type::string()), Type::int())))];
     }
 
     #[DataProvider('typesWithCustomPrefixesProvider')]
@@ -291,7 +291,7 @@ class PhpStanExtractorTest extends TestCase
     }
 
     #[DataProvider('constructorTypesProvider')]
-    public function testExtractConstructorTypesReturnNullOnEmptyDocBlock(string $property)
+    public function testExtractConstructorTypesReturnNullOnEmptyDocBlock(string $property, ?Type $type)
     {
         $this->assertNull($this->extractor->getTypeFromConstructor(ConstructorDummyWithoutDocBlock::class, $property));
     }

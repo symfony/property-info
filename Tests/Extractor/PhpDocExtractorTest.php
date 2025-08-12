@@ -190,8 +190,8 @@ class PhpDocExtractorTest extends TestCase
         yield ['iteratorCollection', Type::collection(Type::object(\Iterator::class), Type::string())];
         yield ['iteratorCollectionWithKey', Type::collection(Type::object(\Iterator::class), Type::string(), Type::int())];
         yield ['nestedIterators', Type::collection(Type::object(\Iterator::class), Type::collection(Type::object(\Iterator::class), Type::string(), Type::int()), Type::int())];
-        yield ['arrayWithKeys', Type::dict(Type::string()), null, null];
-        yield ['arrayWithKeysAndComplexValue', Type::dict(Type::nullable(Type::array(Type::nullable(Type::string()), Type::int()))), null, null];
+        yield ['arrayWithKeys', Type::dict(Type::string())];
+        yield ['arrayWithKeysAndComplexValue', Type::dict(Type::nullable(Type::array(Type::nullable(Type::string()), Type::int())))];
     }
 
     #[DataProvider('typeWithCustomPrefixesProvider')]
