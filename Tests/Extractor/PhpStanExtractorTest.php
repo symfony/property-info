@@ -1073,6 +1073,11 @@ class PhpStanExtractorTest extends TestCase
         yield ['bal', 'A short description ignoring template.', "A long description...\n\n...over several lines."];
         yield ['foo2', null, null];
     }
+
+    public function testGetTypeFromConstructorOfParentClass()
+    {
+        $this->assertEquals(Type::nullable(Type::object(RootDummyItem::class)), $this->extractor->getTypeFromConstructor(Dummy::class, 'rootDummyItem'));
+    }
 }
 
 class PhpStanOmittedParamTagTypeDocBlock
