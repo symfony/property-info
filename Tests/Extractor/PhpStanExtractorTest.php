@@ -26,6 +26,9 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyGeneric;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyNamespace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyPropertyAndGetterWithDifferentTypes;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyUnionType;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyWithTemplateAndParent;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\DummyInDifferentNs;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\DummyWithTemplateAndParentInDifferentNs;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\IFace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\IntRangeDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\InvalidDummy;
@@ -945,6 +948,21 @@ class PhpStanExtractorTest extends TestCase
     }
 
     /**
+     * @dataProvider constructorTypesOfParentClassProvider
+     */
+    public function testExtractTypeFromConstructorOfParentClass(string $class, string $property, Type $type)
+    {
+        $this->assertEquals($type, $this->extractor->getTypeFromConstructor($class, $property));
+    }
+
+    public static function constructorTypesOfParentClassProvider(): iterable
+    {
+        yield [Dummy::class, 'rootDummyItem', Type::nullable(Type::object(RootDummyItem::class))];
+        yield [DummyWithTemplateAndParent::class, 'items', Type::list(Type::template('T', Type::object(DummyInDifferentNs::class)))];
+        yield [DummyWithTemplateAndParentInDifferentNs::class, 'items', Type::list(Type::template('T', Type::object(DummyInDifferentNs::class)))];
+    }
+
+    /**
      * @dataProvider unionTypesProvider
      */
     public function testExtractorUnionTypes(string $property, ?Type $type)
@@ -1142,11 +1160,6 @@ class PhpStanExtractorTest extends TestCase
         yield ['baz', 'Should be used.', null];
         yield ['bal', 'A short description ignoring template.', "A long description...\n\n...over several lines."];
         yield ['foo2', null, null];
-    }
-
-    public function testGetTypeFromConstructorOfParentClass()
-    {
-        $this->assertEquals(Type::nullable(Type::object(RootDummyItem::class)), $this->extractor->getTypeFromConstructor(Dummy::class, 'rootDummyItem'));
     }
 }
 

@@ -245,11 +245,12 @@ final class PhpStanExtractor implements PropertyDescriptionExtractorInterface, P
 
     public function getTypeFromConstructor(string $class, string $property): ?Type
     {
-        if (!$tagDocNode = $this->getDocBlockFromConstructor($class, $property)) {
+        $declaringClass = $class;
+        if (!$tagDocNode = $this->getDocBlockFromConstructor($declaringClass, $property)) {
             return null;
         }
 
-        $typeContext = $this->typeContextFactory->createFromClassName($class);
+        $typeContext = $this->typeContextFactory->createFromClassName($class, $declaringClass);
 
         return $this->stringTypeResolver->resolve((string) $tagDocNode->type, $typeContext);
     }
