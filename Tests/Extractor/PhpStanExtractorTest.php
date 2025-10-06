@@ -891,7 +891,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['ddd', null];
     }
 
-    #[DataProvider('constructorTypesOfParentClassProvider')
+    #[DataProvider('constructorTypesOfParentClassProvider')]
     public function testExtractTypeFromConstructorOfParentClass(string $class, string $property, Type $type)
     {
         $this->assertEquals($type, $this->extractor->getTypeFromConstructor($class, $property));
