@@ -36,6 +36,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php81Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\UnderscoreDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\VirtualProperties;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Type;
@@ -387,31 +388,31 @@ class ReflectionExtractorTest extends TestCase
     }
 
     #[DataProvider('getReadableProperties')]
-    public function testIsReadable($property, $expected)
+    public function testIsReadable(string $class, string $property, bool $expected)
     {
-        $this->assertSame(
-            $expected,
-            $this->extractor->isReadable('Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy', $property, [])
-        );
+        $this->assertSame($expected, $this->extractor->isReadable($class, $property, []));
     }
 
     public static function getReadableProperties()
     {
         return [
-            ['bar', false],
-            ['baz', false],
-            ['parent', true],
-            ['a', true],
-            ['b', false],
-            ['c', true],
-            ['d', true],
-            ['e', false],
-            ['f', false],
-            ['Id', true],
-            ['id', true],
-            ['Guid', true],
-            ['guid', false],
-            ['element', false],
+            [Dummy::class, 'bar', false],
+            [Dummy::class, 'baz', false],
+            [Dummy::class, 'parent', true],
+            [Dummy::class, 'a', true],
+            [Dummy::class, 'b', false],
+            [Dummy::class, 'c', true],
+            [Dummy::class, 'd', true],
+            [Dummy::class, 'e', false],
+            [Dummy::class, 'f', false],
+            [Dummy::class, 'Id', true],
+            [Dummy::class, 'id', true],
+            [Dummy::class, 'Guid', true],
+            [Dummy::class, 'guid', false],
+            [Dummy::class, 'element', false],
+            [UnderscoreDummy::class, '_', true],
+            [UnderscoreDummy::class, '__', true],
+            [UnderscoreDummy::class, '___', false],
         ];
     }
 
@@ -586,6 +587,10 @@ class ReflectionExtractorTest extends TestCase
             [Dummy::class, 'foo', true, PropertyReadInfo::TYPE_PROPERTY, 'foo', PropertyReadInfo::VISIBILITY_PUBLIC, false],
             [Php71Dummy::class, 'foo', true, PropertyReadInfo::TYPE_METHOD, 'getFoo', PropertyReadInfo::VISIBILITY_PUBLIC, false],
             [Php71Dummy::class, 'buz', true, PropertyReadInfo::TYPE_METHOD, 'getBuz', PropertyReadInfo::VISIBILITY_PUBLIC, false],
+            [UnderscoreDummy::class, '_', true, PropertyReadInfo::TYPE_METHOD, 'get_', PropertyReadInfo::VISIBILITY_PUBLIC, false],
+            [UnderscoreDummy::class, '__', true, PropertyReadInfo::TYPE_METHOD, 'get__', PropertyReadInfo::VISIBILITY_PUBLIC, false],
+            [UnderscoreDummy::class, 'foo_bar', false, null, null, null, null],
+            [UnderscoreDummy::class, '_foo_', false, null, null, null, null],
         ];
     }
 
@@ -995,5 +1000,34 @@ class ReflectionExtractorTest extends TestCase
         yield ['dateObject', null];
         yield ['dateTime', Type::object(\DateTimeImmutable::class)];
         yield ['ddd', null];
+    }
+
+    #[DataProvider('camelizeProvider')]
+    public function testCamelize(string $input, string $expected)
+    {
+        $reflection = new \ReflectionClass($this->extractor);
+        $method = $reflection->getMethod('camelize');
+
+        if (\PHP_VERSION_ID < 80500) {
+            $method->setAccessible(true);
+        }
+
+        $this->assertSame($expected, $method->invoke($this->extractor, $input));
+    }
+
+    public static function camelizeProvider(): iterable
+    {
+        yield 'single underscore' => ['_', '_'];
+        yield 'double underscore' => ['__', '__'];
+        yield 'triple underscore' => ['___', '___'];
+
+        yield 'snake case' => ['foo_bar', 'FooBar'];
+        yield 'double snake case' => ['foo__bar', 'FooBar'];
+        yield 'leading underscore' => ['_foo', 'Foo'];
+        yield 'trailing underscore' => ['foo_', 'Foo'];
+        yield 'leading and trailing' => ['_foo_bar_', 'FooBar'];
+        yield 'empty string' => ['', ''];
+        yield 'no underscore' => ['fooBar', 'FooBar'];
+        yield 'pascal case' => ['FooBar', 'FooBar'];
     }
 }
