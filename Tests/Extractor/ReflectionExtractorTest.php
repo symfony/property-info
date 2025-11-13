@@ -1072,10 +1072,6 @@ class ReflectionExtractorTest extends TestCase
         $reflection = new \ReflectionClass($this->extractor);
         $method = $reflection->getMethod('camelize');
 
-        if (\PHP_VERSION_ID < 80500) {
-            $method->setAccessible(true);
-        }
-
         $this->assertSame($expected, $method->invoke($this->extractor, $input));
     }
 
