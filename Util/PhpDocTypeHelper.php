@@ -106,6 +106,10 @@ final class PhpDocTypeHelper
     {
         $docTypeString = (string) $docType;
 
+        if ('mixed[]' === $docTypeString) {
+            $docTypeString = 'array';
+        }
+
         if ($docType instanceof Collection) {
             $fqsen = $docType->getFqsen();
             if ($fqsen && 'list' === $fqsen->getName() && !class_exists(List_::class, false) && !class_exists((string) $fqsen)) {
