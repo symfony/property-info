@@ -73,12 +73,12 @@ class PhpStanExtractorTest extends TestCase
         yield ['foo2', Type::float()];
         yield ['foo3', Type::callable()];
         yield ['foo5', Type::mixed()];
-        yield ['files', Type::union(Type::list(Type::object(\SplFileInfo::class)), Type::resource())];
+        yield ['files', Type::union(Type::array(Type::object(\SplFileInfo::class)), Type::resource())];
         yield ['bal', Type::object(\DateTimeImmutable::class)];
         yield ['parent', Type::object(ParentDummy::class)];
-        yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
-        yield ['nestedCollection', Type::list(Type::list(Type::string()))];
-        yield ['mixedCollection', Type::list()];
+        yield ['collection', Type::array(Type::object(\DateTimeImmutable::class))];
+        yield ['nestedCollection', Type::array(Type::array(Type::string()))];
+        yield ['mixedCollection', Type::array(Type::mixed())];
         yield ['a', Type::int()];
         yield ['b', Type::nullable(Type::object(ParentDummy::class))];
         yield ['c', Type::nullable(Type::bool())];
@@ -89,7 +89,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['h', Type::nullable(Type::string())];
         yield ['i', Type::union(Type::int(), Type::string(), Type::null())];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class))];
-        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int()))];
+        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::array(Type::int()))];
         yield ['donotexist', null];
         yield ['staticGetter', null];
         yield ['staticSetter', null];
@@ -98,7 +98,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['arrayOfMixed', Type::dict(Type::mixed())];
         yield ['listOfStrings', Type::list(Type::string())];
         yield ['self', Type::object(Dummy::class)];
-        yield ['rootDummyItems', Type::list(Type::object(RootDummyItem::class))];
+        yield ['rootDummyItems', Type::array(Type::object(RootDummyItem::class))];
         yield ['rootDummyItem', Type::object(RootDummyItem::class)];
         yield ['collectionAsObject', Type::collection(Type::object(DummyCollection::class), Type::string(), Type::int())];
     }
@@ -145,12 +145,12 @@ class PhpStanExtractorTest extends TestCase
         yield ['foo2', Type::float()];
         yield ['foo3', Type::callable()];
         yield ['foo5', Type::mixed()];
-        yield ['files', Type::union(Type::list(Type::object(\SplFileInfo::class)), Type::resource())];
+        yield ['files', Type::union(Type::array(Type::object(\SplFileInfo::class)), Type::resource())];
         yield ['bal', Type::object(\DateTimeImmutable::class)];
         yield ['parent', Type::object(ParentDummy::class)];
-        yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
-        yield ['nestedCollection', Type::list(Type::list(Type::string()))];
-        yield ['mixedCollection', Type::list()];
+        yield ['collection', Type::array(Type::object(\DateTimeImmutable::class))];
+        yield ['nestedCollection', Type::array(Type::array(Type::string()))];
+        yield ['mixedCollection', Type::array(Type::mixed())];
         yield ['a', null];
         yield ['b', null];
         yield ['c', null];
@@ -161,7 +161,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['h', Type::nullable(Type::string())];
         yield ['i', Type::union(Type::int(), Type::string(), Type::null())];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class))];
-        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int()))];
+        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::array(Type::int()))];
         yield ['donotexist', null];
         yield ['staticGetter', null];
         yield ['staticSetter', null];
@@ -204,12 +204,12 @@ class PhpStanExtractorTest extends TestCase
         yield ['foo2', Type::float()];
         yield ['foo3', Type::callable()];
         yield ['foo5', Type::mixed()];
-        yield ['files', Type::union(Type::list(Type::object(\SplFileInfo::class)), Type::resource())];
+        yield ['files', Type::union(Type::array(Type::object(\SplFileInfo::class)), Type::resource())];
         yield ['bal', Type::object(\DateTimeImmutable::class)];
         yield ['parent', Type::object(ParentDummy::class)];
-        yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
-        yield ['nestedCollection', Type::list(Type::list(Type::string()))];
-        yield ['mixedCollection', Type::list()];
+        yield ['collection', Type::array(Type::object(\DateTimeImmutable::class))];
+        yield ['nestedCollection', Type::array(Type::array(Type::string()))];
+        yield ['mixedCollection', Type::array(Type::mixed())];
         yield ['a', null];
         yield ['b', null];
         yield ['c', Type::nullable(Type::bool())];
@@ -220,7 +220,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['h', Type::nullable(Type::string())];
         yield ['i', Type::union(Type::int(), Type::string(), Type::null())];
         yield ['j', Type::nullable(Type::object(\DateTimeImmutable::class))];
-        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::list(Type::int()))];
+        yield ['nullableCollectionOfNonNullableElements', Type::nullable(Type::array(Type::int()))];
         yield ['nonNullableCollectionOfNullableElements', Type::array(Type::nullable(Type::int()))];
         yield ['nullableCollectionOfMultipleNonNullableElementTypes', Type::nullable(Type::array(Type::union(Type::int(), Type::string())))];
         yield ['donotexist', null];
@@ -336,16 +336,16 @@ class PhpStanExtractorTest extends TestCase
     public static function unionTypesProvider(): iterable
     {
         yield ['a', Type::union(Type::string(), Type::int())];
-        yield ['b', Type::list(Type::union(Type::string(), Type::int()))];
+        yield ['b', Type::array(Type::union(Type::string(), Type::int()))];
         yield ['c', Type::array(Type::union(Type::string(), Type::int()))];
         yield ['d', Type::array(Type::array(Type::string()), Type::union(Type::string(), Type::int()))];
         yield ['e', Type::union(
             Type::generic(
                 Type::object(Dummy::class),
-                Type::array(Type::string(), Type::mixed()),
+                Type::array(Type::string()),
                 Type::union(
                     Type::int(),
-                    Type::list(Type::collection(Type::object(\Traversable::class), Type::object(DefaultValue::class))),
+                    Type::array(Type::collection(Type::object(\Traversable::class), Type::object(DefaultValue::class))),
                 ),
             ),
             Type::object(ParentDummy::class),

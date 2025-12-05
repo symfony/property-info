@@ -25,7 +25,7 @@
     "require": {
         "php": ">=8.4",
         "symfony/string": "^7.4|^8.0",
-        "symfony/type-info": "^7.4|^8.0"
+        "symfony/type-info": "^7.4.1|^8.0.1"
     },
     "require-dev": {
         "phpdocumentor/reflection-docblock": "^5.2",
