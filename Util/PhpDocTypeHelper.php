@@ -300,14 +300,6 @@ final class PhpDocTypeHelper
             return Type::array($collectionValueType, $collectionKeyType);
         }
 
-        if ($docType instanceof PseudoType) {
-            if ($docType->underlyingType() instanceof Integer) {
-                return Type::int();
-            } elseif ($docType->underlyingType() instanceof String_) {
-                return Type::string();
-            }
-        }
-
         $docTypeString = match ($docTypeString) {
             'integer' => 'int',
             'boolean' => 'bool',
@@ -324,7 +316,22 @@ final class PhpDocTypeHelper
             return Type::array();
         }
 
-        return null !== $class ? Type::object($class) : Type::builtin($phpType);
+        if (null === $class) {
+            return Type::builtin($phpType);
+        }
+
+        if ($docType instanceof PseudoType) {
+            if ($docType->underlyingType() instanceof Integer) {
+                return Type::int();
+            } elseif ($docType->underlyingType() instanceof String_) {
+                return Type::string();
+            } else {
+                // It's safer to fall back to other extractors here, as resolving pseudo types correctly is not easy at the moment
+                return null;
+            }
+        }
+
+        return Type::object($class);
     }
 
     private function normalizeType(string $docType): string
