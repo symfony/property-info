@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
+use phpDocumentor\Reflection\PseudoTypes\IntMask;
+use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
@@ -428,7 +430,7 @@ class PhpDocExtractorTest extends TestCase
     /**
      * @dataProvider pseudoTypesProvider
      */
-    public function testPseudoTypes($property, array $type)
+    public function testPseudoTypes($property, ?array $type)
     {
         $this->assertEquals($type, $this->extractor->getTypes('Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypesDummy', $property));
     }
@@ -445,6 +447,17 @@ class PhpDocExtractorTest extends TestCase
             ['numericString', [new Type(Type::BUILTIN_TYPE_STRING, false, null)]],
             ['traitString', [new Type(Type::BUILTIN_TYPE_STRING, false, null)]],
             ['positiveInt', [new Type(Type::BUILTIN_TYPE_INT, false, null)]],
+            ['true', [new Type(Type::BUILTIN_TYPE_TRUE, false, null)]],
+            ['false', [new Type(Type::BUILTIN_TYPE_FALSE, false, null)]],
+            ['valueOfStrings', null],
+            ['valueOfIntegers', null],
+            ['keyOfStrings', null],
+            ['keyOfIntegers', null],
+            ['arrayKey', null],
+            ['intMask', class_exists(IntMask::class) ? [new Type(Type::BUILTIN_TYPE_INT, false, null)] : null],
+            ['intMaskOf', class_exists(IntMaskOf::class) ? [new Type(Type::BUILTIN_TYPE_INT, false, null)] : null],
+            ['conditional', null],
+            ['offsetAccess', null],
         ];
     }
 

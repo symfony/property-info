@@ -156,19 +156,26 @@ final class PhpDocTypeHelper
             return new Type(Type::BUILTIN_TYPE_ARRAY, $nullable, null, true, $collectionKeyTypes, $collectionValueTypes);
         }
 
-        if ($type instanceof PseudoType) {
-            if ($type->underlyingType() instanceof Integer) {
-                return new Type(Type::BUILTIN_TYPE_INT, $nullable, null);
-            } elseif ($type->underlyingType() instanceof String_) {
-                return new Type(Type::BUILTIN_TYPE_STRING, $nullable, null);
-            }
-        }
-
         $docType = $this->normalizeType($docType);
         [$phpType, $class] = $this->getPhpTypeAndClass($docType);
 
         if ('array' === $docType) {
             return new Type(Type::BUILTIN_TYPE_ARRAY, $nullable, null, true, null, null);
+        }
+
+        if (null === $class) {
+            return new Type($phpType, $nullable, $class);
+        }
+
+        if ($type instanceof PseudoType) {
+            if ($type->underlyingType() instanceof Integer) {
+                return new Type(Type::BUILTIN_TYPE_INT, $nullable, null);
+            } elseif ($type->underlyingType() instanceof String_) {
+                return new Type(Type::BUILTIN_TYPE_STRING, $nullable, null);
+            } else {
+                // It's safer to fall back to other extractors here, as resolving pseudo types correctly is not easy at the moment
+                return null;
+            }
         }
 
         return new Type($phpType, $nullable, $class);
