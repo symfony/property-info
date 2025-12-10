@@ -454,6 +454,9 @@ class ReflectionExtractorTest extends TestCase
             [Php71DummyExtended2::class, 'string', false, false, '', '', null, null, PropertyWriteInfo::VISIBILITY_PUBLIC, false],
             [Php71DummyExtended2::class, 'string', true, false,  '', '', null, null, PropertyWriteInfo::VISIBILITY_PUBLIC, false],
             [Php71DummyExtended2::class, 'baz', false, true, PropertyWriteInfo::TYPE_ADDER_AND_REMOVER, null, 'addBaz', 'removeBaz', PropertyWriteInfo::VISIBILITY_PUBLIC, false],
+            [SnakeCaseDummy::class, 'snake_property', false, true, PropertyWriteInfo::TYPE_METHOD, 'setSnakeProperty', null, null, PropertyWriteInfo::VISIBILITY_PUBLIC, false],
+            [SnakeCaseDummy::class, 'snake_method', false, true, PropertyWriteInfo::TYPE_METHOD, 'setSnake_method', null, null, PropertyWriteInfo::VISIBILITY_PUBLIC, false],
+            [SnakeCaseDummy::class, 'snake_readonly', false, false, PropertyWriteInfo::TYPE_NONE, null, null, null, null, null],
         ];
     }
 
