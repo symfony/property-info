@@ -434,9 +434,29 @@ class PhpStanExtractorTest extends TestCase
             ['date', [new LegacyType(LegacyType::BUILTIN_TYPE_INT)]],
             ['timezone', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeZone')]],
             ['dateObject', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]],
-            ['dateTime', null],
+            ['dateTime', [new LegacyType(Type::BUILTIN_TYPE_INT)]],
             ['ddd', null],
         ];
+    }
+
+    /**
+     * @group legacy
+     *
+     * @dataProvider provideLegacyConstructorTypesWithOnlyVarTags
+     */
+    public function testExtractConstructorTypesWithOnlyVarTagsLegacy($property, ?array $type = null)
+    {
+        $this->assertEquals($type, $this->extractor->getTypesFromConstructor('Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummyWithVarTagsDocBlock', $property));
+    }
+
+    public static function provideLegacyConstructorTypesWithOnlyVarTags()
+    {
+        yield ['date', [new LegacyType(Type::BUILTIN_TYPE_INT)]];
+        yield ['dateObject', [new LegacyType(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]];
+        yield ['objectsArray', [new LegacyType(Type::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(Type::BUILTIN_TYPE_INT), new LegacyType(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy'))]];
+        yield ['dateTime', null];
+        yield ['mixed', null];
+        yield ['timezone', null];
     }
 
     /**
