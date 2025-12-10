@@ -12,6 +12,8 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\PseudoTypes\IntMask;
+use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
@@ -853,6 +855,17 @@ class PhpDocExtractorTest extends TestCase
         yield ['numericString', Type::string()];
         yield ['traitString', Type::string()];
         yield ['positiveInt', Type::int()];
+        yield ['true', Type::true()];
+        yield ['false', Type::false()];
+        yield ['valueOfStrings', null];
+        yield ['valueOfIntegers', null];
+        yield ['keyOfStrings', null];
+        yield ['keyOfIntegers', null];
+        yield ['arrayKey', null];
+        yield ['intMask', class_exists(IntMask::class) ? Type::int() : null];
+        yield ['intMaskOf', class_exists(IntMaskOf::class) ? Type::int() : null];
+        yield ['conditional', null];
+        yield ['offsetAccess', null];
     }
 
     #[DataProvider('promotedPropertyProvider')]
