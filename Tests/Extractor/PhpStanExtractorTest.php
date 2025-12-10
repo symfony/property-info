@@ -434,7 +434,7 @@ class PhpStanExtractorTest extends TestCase
             ['date', [new LegacyType(LegacyType::BUILTIN_TYPE_INT)]],
             ['timezone', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeZone')]],
             ['dateObject', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]],
-            ['dateTime', [new LegacyType(Type::BUILTIN_TYPE_INT)]],
+            ['dateTime', [new LegacyType(LegacyType::BUILTIN_TYPE_INT)]],
             ['ddd', null],
         ];
     }
@@ -451,9 +451,9 @@ class PhpStanExtractorTest extends TestCase
 
     public static function provideLegacyConstructorTypesWithOnlyVarTags()
     {
-        yield ['date', [new LegacyType(Type::BUILTIN_TYPE_INT)]];
-        yield ['dateObject', [new LegacyType(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]];
-        yield ['objectsArray', [new LegacyType(Type::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(Type::BUILTIN_TYPE_INT), new LegacyType(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy'))]];
+        yield ['date', [new LegacyType(LegacyType::BUILTIN_TYPE_INT)]];
+        yield ['dateObject', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]];
+        yield ['objectsArray', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy'))]];
         yield ['dateTime', null];
         yield ['mixed', null];
         yield ['timezone', null];
@@ -963,7 +963,7 @@ class PhpStanExtractorTest extends TestCase
         yield ['date', Type::int()];
         yield ['timezone', Type::object(\DateTimeZone::class)];
         yield ['dateObject', Type::object(\DateTimeInterface::class)];
-        yield ['dateTime', null];
+        yield ['dateTime', Type::int()];
         yield ['ddd', null];
     }
 
