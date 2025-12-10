@@ -370,9 +370,27 @@ class PhpStanExtractorTest extends TestCase
             ['date', [new Type(Type::BUILTIN_TYPE_INT)]],
             ['timezone', [new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeZone')]],
             ['dateObject', [new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]],
-            ['dateTime', null],
+            ['dateTime', [new Type(Type::BUILTIN_TYPE_INT)]],
             ['ddd', null],
         ];
+    }
+
+    /**
+     * @dataProvider provideConstructorTypesWithOnlyVarTags
+     */
+    public function testExtractConstructorTypesWithOnlyVarTags($property, ?array $type = null)
+    {
+        $this->assertEquals($type, $this->extractor->getTypesFromConstructor('Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummyWithVarTagsDocBlock', $property));
+    }
+
+    public static function provideConstructorTypesWithOnlyVarTags()
+    {
+        yield ['date', [new Type(Type::BUILTIN_TYPE_INT)]];
+        yield ['dateObject', [new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeInterface')]];
+        yield ['objectsArray', [new Type(Type::BUILTIN_TYPE_ARRAY, false, null, true, new Type(Type::BUILTIN_TYPE_INT), new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy'))]];
+        yield ['dateTime', null];
+        yield ['mixed', null];
+        yield ['timezone', null];
     }
 
     /**

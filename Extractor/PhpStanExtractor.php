@@ -154,7 +154,7 @@ final class PhpStanExtractor implements PropertyTypeExtractorInterface, Construc
     public function getTypesFromConstructor(string $class, string $property): ?array
     {
         if (null === $tagDocNode = $this->getDocBlockFromConstructor($class, $property)) {
-            return null;
+            return $this->getTypes($class, $property);
         }
 
         $types = [];
