@@ -419,7 +419,7 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
                 $method = $reflClass->getMethod($methodName);
 
                 if (!\in_array($mutatorPrefix, $this->arrayMutatorPrefixes, true)) {
-                    return new PropertyWriteInfo(PropertyWriteInfo::TYPE_METHOD, $methodName, $this->getWriteVisiblityForMethod($method), $method->isStatic());
+                    return new PropertyWriteInfo(PropertyWriteInfo::TYPE_METHOD, $methodName, $this->getWriteVisibilityForMethod($method), $method->isStatic());
                 }
             }
         }
@@ -442,7 +442,7 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
                 if ($accessible) {
                     $method = $reflClass->getMethod($getsetterNonCamelized);
 
-                    return new PropertyWriteInfo(PropertyWriteInfo::TYPE_METHOD, $getsetterNonCamelized, $this->getWriteVisiblityForMethod($method), $method->isStatic());
+                    return new PropertyWriteInfo(PropertyWriteInfo::TYPE_METHOD, $getsetterNonCamelized, $this->getWriteVisibilityForMethod($method), $method->isStatic());
                 }
                 $errors[] = $methodAccessibleErrors;
             }
