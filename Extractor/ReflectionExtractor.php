@@ -270,8 +270,10 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
 
         if ($allowGetterSetter && $reflClass->hasMethod($getsetter) && ($reflClass->getMethod($getsetter)->getModifiers() & $this->methodReflectionFlags)) {
             $method = $reflClass->getMethod($getsetter);
-
-            return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $getsetter, $this->getReadVisibilityForMethod($method), $method->isStatic(), false);
+            // Only consider jQuery-style accessors when they don't require parameters
+            if (!$method->getNumberOfRequiredParameters()) {
+                return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $getsetter, $this->getReadVisibilityForMethod($method), $method->isStatic(), false);
+            }
         }
 
         if ($allowMagicGet && $reflClass->hasMethod('__get') && (($r = $reflClass->getMethod('__get'))->getModifiers() & $this->methodReflectionFlags)) {
