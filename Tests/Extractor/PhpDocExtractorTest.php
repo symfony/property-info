@@ -22,6 +22,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypeDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsedInTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsingTrait;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VoidNeverReturnTypeDummy;
 use Symfony\Component\PropertyInfo\Type;
 
 /**
@@ -475,6 +476,18 @@ class PhpDocExtractorTest extends TestCase
             ['promoted', null],
             ['promotedAndMutated', [new Type(Type::BUILTIN_TYPE_STRING)]],
         ];
+    }
+
+    public function testSkipVoidNeverReturnTypeAccessors()
+    {
+        // Methods that return void or never should be skipped, so no types should be extracted
+        $this->assertNull($this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertNull($this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+        // Normal getter should still work
+        $types = $this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'normalProperty');
+        $this->assertNotNull($types);
+        $this->assertCount(1, $types);
+        $this->assertEquals(Type::BUILTIN_TYPE_STRING, $types[0]->getBuiltinType());
     }
 }
 

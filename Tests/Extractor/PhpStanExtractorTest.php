@@ -28,6 +28,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\RootDummy\RootDummyItem;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\AnotherNamespace\DummyInAnotherNamespace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsedInTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsingTrait;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VoidNeverReturnTypeDummy;
 use Symfony\Component\PropertyInfo\Type;
 
 require_once __DIR__.'/../Fixtures/Extractor/DummyNamespace.php';
@@ -585,6 +586,13 @@ class PhpStanExtractorTest extends TestCase
                 ),
             ],
         ];
+    }
+
+    public function testSkipVoidNeverReturnTypeAccessors()
+    {
+        $this->assertNull($this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertNull($this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+        $this->assertEquals([new Type(Type::BUILTIN_TYPE_STRING)], $this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'normalProperty'));
     }
 }
 

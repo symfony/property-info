@@ -290,19 +290,24 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
     {
         $prefixes = self::ACCESSOR === $type ? $this->accessorPrefixes : $this->mutatorPrefixes;
         $prefix = null;
+        $method = null;
 
         foreach ($prefixes as $prefix) {
             $methodName = $prefix.$ucFirstProperty;
 
             try {
-                $reflectionMethod = new \ReflectionMethod($class, $methodName);
-                if ($reflectionMethod->isStatic()) {
+                $method = new \ReflectionMethod($class, $methodName);
+                if ($method->isStatic()) {
+                    continue;
+                }
+
+                if (self::ACCESSOR === $type && \in_array((string) $method->getReturnType(), ['void', 'never'], true)) {
                     continue;
                 }
 
                 if (
-                    (self::ACCESSOR === $type && 0 === $reflectionMethod->getNumberOfRequiredParameters())
-                    || (self::MUTATOR === $type && $reflectionMethod->getNumberOfParameters() >= 1)
+                    (self::ACCESSOR === $type && !$method->getNumberOfRequiredParameters())
+                    || (self::MUTATOR === $type && $method->getNumberOfParameters() >= 1)
                 ) {
                     break;
                 }
@@ -311,11 +316,11 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
             }
         }
 
-        if (!isset($reflectionMethod)) {
+        if (!$method) {
             return null;
         }
 
-        $reflector = $reflectionMethod->getDeclaringClass();
+        $reflector = $method->getDeclaringClass();
 
         foreach ($reflector->getTraits() as $trait) {
             if ($trait->hasMethod($methodName)) {
@@ -324,7 +329,7 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         }
 
         try {
-            return [$this->docBlockFactory->create($reflectionMethod, $this->createFromReflector($reflector)), $prefix];
+            return [$this->docBlockFactory->create($method, $this->createFromReflector($reflector)), $prefix];
         } catch (\InvalidArgumentException|\RuntimeException) {
             return null;
         }
