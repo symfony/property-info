@@ -169,26 +169,16 @@ final class PhpDocTypeHelper
 
         [$phpType, $class] = $this->getPhpTypeAndClass($docTypeString);
 
-        if ('array' === $docTypeString) {
-            return Type::array();
-        }
-
-        if (null === $class) {
-            return Type::builtin($phpType);
-        }
-
-        if ($docType instanceof PseudoType) {
-            if ($docType->underlyingType() instanceof Integer) {
-                return Type::int();
-            } elseif ($docType->underlyingType() instanceof String_) {
-                return Type::string();
-            } else {
-                // It's safer to fall back to other extractors here, as resolving pseudo types correctly is not easy at the moment
-                return null;
-            }
-        }
-
-        return Type::object($class);
+        return match (true) {
+            'array' === $docTypeString => Type::array(),
+            null === $class => Type::builtin($phpType),
+            $docType instanceof PseudoType => match (true) {
+                $docType->underlyingType() instanceof Integer => Type::int(),
+                $docType->underlyingType() instanceof String_ => Type::string(),
+                default => null, // It's safer to fall back to other extractors here, as resolving pseudo types correctly is not easy at the moment
+            },
+            default => Type::object($class),
+        };
     }
 
     private function getPhpTypeAndClass(string $docType): array
