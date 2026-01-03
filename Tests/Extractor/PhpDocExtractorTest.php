@@ -15,8 +15,6 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\PseudoTypes\IntMask;
 use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy;
@@ -30,8 +28,8 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypeDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypesDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsedInTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsingTrait;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VoidNeverReturnTypeDummy;
 use Symfony\Component\TypeInfo\Type;
-use Symfony\Component\TypeInfo\Type\NullableType;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -400,6 +398,15 @@ class PhpDocExtractorTest extends TestCase
     {
         yield ['promoted', null];
         yield ['promotedAndMutated', Type::string()];
+    }
+
+    public function testSkipVoidNeverReturnTypeAccessors()
+    {
+        // Methods that return void or never should be skipped, so no types should be extracted
+        $this->assertNull($this->extractor->getType(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertNull($this->extractor->getType(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+        // Normal getter should still work
+        $this->assertEquals(Type::string(), $this->extractor->getType(VoidNeverReturnTypeDummy::class, 'normalProperty'));
     }
 }
 

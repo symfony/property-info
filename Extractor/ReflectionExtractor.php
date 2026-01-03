@@ -319,19 +319,13 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         foreach ($this->accessorPrefixes as $prefix) {
             $methodName = $prefix.$camelProp;
 
-            if ($reflClass->hasMethod($methodName) && $reflClass->getMethod($methodName)->getModifiers() & $this->methodReflectionFlags && !$reflClass->getMethod($methodName)->getNumberOfRequiredParameters()) {
-                $method = $reflClass->getMethod($methodName);
-
-                return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $methodName, $this->getReadVisibilityForMethod($method), $method->isStatic(), false);
+            if ($reflClass->hasMethod($methodName) && ($m = $reflClass->getMethod($methodName))->getModifiers() & $this->methodReflectionFlags && !$m->getNumberOfRequiredParameters() && !\in_array((string) $m->getReturnType(), ['void', 'never'], true)) {
+                return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $methodName, $this->getReadVisibilityForMethod($m), $m->isStatic(), false);
             }
         }
 
-        if ($allowGetterSetter && $reflClass->hasMethod($getsetter) && ($reflClass->getMethod($getsetter)->getModifiers() & $this->methodReflectionFlags)) {
-            $method = $reflClass->getMethod($getsetter);
-            // Only consider jQuery-style accessors when they don't require parameters
-            if (!$method->getNumberOfRequiredParameters()) {
-                return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $getsetter, $this->getReadVisibilityForMethod($method), $method->isStatic(), false);
-            }
+        if ($allowGetterSetter && $reflClass->hasMethod($getsetter) && ($m = $reflClass->getMethod($getsetter))->getModifiers() & $this->methodReflectionFlags && !$m->getNumberOfRequiredParameters() && !\in_array((string) $m->getReturnType(), ['void', 'never'], true)) {
+            return new PropertyReadInfo(PropertyReadInfo::TYPE_METHOD, $getsetter, $this->getReadVisibilityForMethod($m), $m->isStatic(), false);
         }
 
         if ($allowMagicGet && $reflClass->hasMethod('__get') && (($r = $reflClass->getMethod('__get'))->getModifiers() & $this->methodReflectionFlags)) {
