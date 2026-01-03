@@ -1138,9 +1138,8 @@ class PhpStanExtractorTest extends TestCase
         $this->assertEquals(Type::string(), $this->extractor->getType(VoidNeverReturnTypeDummy::class, 'normalProperty'));
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
     public function testSkipVoidNeverReturnTypeAccessorsLegacy()
     {
         $this->assertNull($this->extractor->getTypes(VoidNeverReturnTypeDummy::class, 'voidProperty'));

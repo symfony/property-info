@@ -893,9 +893,8 @@ class PhpDocExtractorTest extends TestCase
         $this->assertEquals(Type::string(), $this->extractor->getType(VoidNeverReturnTypeDummy::class, 'normalProperty'));
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
     public function testSkipVoidNeverReturnTypeAccessorsLegacy()
     {
         // Methods that return void or never should be skipped, so no types should be extracted
