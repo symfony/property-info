@@ -35,6 +35,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Php82Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\SnakeCaseDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\UnderscoreDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\VirtualProperties;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VoidNeverReturnTypeDummy;
 use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\NullableType;
@@ -610,7 +611,7 @@ class ReflectionExtractorTest extends TestCase
             [Dummy::class, 'static', true, PropertyReadInfo::TYPE_METHOD, 'getStatic', PropertyReadInfo::VISIBILITY_PUBLIC, true],
             [Dummy::class, 'foo', true, PropertyReadInfo::TYPE_PROPERTY, 'foo', PropertyReadInfo::VISIBILITY_PUBLIC, false],
             [Php71Dummy::class, 'foo', true, PropertyReadInfo::TYPE_METHOD, 'getFoo', PropertyReadInfo::VISIBILITY_PUBLIC, false],
-            [Php71Dummy::class, 'buz', true, PropertyReadInfo::TYPE_METHOD, 'getBuz', PropertyReadInfo::VISIBILITY_PUBLIC, false],
+            [Php71Dummy::class, 'buz', false, null, null, null, null],
             [UnderscoreDummy::class, '_', true, PropertyReadInfo::TYPE_METHOD, 'get_', PropertyReadInfo::VISIBILITY_PUBLIC, false],
             [UnderscoreDummy::class, '__', true, PropertyReadInfo::TYPE_METHOD, 'get__', PropertyReadInfo::VISIBILITY_PUBLIC, false],
             [UnderscoreDummy::class, 'foo_bar', false, null, null, null, null],
@@ -1092,5 +1093,14 @@ class ReflectionExtractorTest extends TestCase
         yield 'empty string' => ['', ''];
         yield 'no underscore' => ['fooBar', 'FooBar'];
         yield 'pascal case' => ['FooBar', 'FooBar'];
+    }
+
+    public function testSkipVoidNeverReturnTypeAccessors()
+    {
+        $this->assertFalse($this->extractor->isReadable(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertFalse($this->extractor->isReadable(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+        $this->assertTrue($this->extractor->isReadable(VoidNeverReturnTypeDummy::class, 'normalProperty'));
+        $this->assertNull($this->extractor->getReadInfo(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertNull($this->extractor->getReadInfo(VoidNeverReturnTypeDummy::class, 'neverProperty'));
     }
 }
