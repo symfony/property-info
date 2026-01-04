@@ -28,6 +28,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypeDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\PseudoTypesDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsedInTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\TraitUsage\DummyUsingTrait;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\VoidNeverReturnTypeDummy;
 use Symfony\Component\TypeInfo\Type;
 
 /**
@@ -397,6 +398,15 @@ class PhpDocExtractorTest extends TestCase
     {
         yield ['promoted', null];
         yield ['promotedAndMutated', Type::string()];
+    }
+
+    public function testSkipVoidNeverReturnTypeAccessors()
+    {
+        // Methods that return void or never should be skipped, so no types should be extracted
+        $this->assertNull($this->extractor->getType(VoidNeverReturnTypeDummy::class, 'voidProperty'));
+        $this->assertNull($this->extractor->getType(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+        // Normal getter should still work
+        $this->assertEquals(Type::string(), $this->extractor->getType(VoidNeverReturnTypeDummy::class, 'normalProperty'));
     }
 }
 
