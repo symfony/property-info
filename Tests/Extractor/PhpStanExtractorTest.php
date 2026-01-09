@@ -29,6 +29,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyPropertyAndGetterWithDiff
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyUnionType;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyWithTemplateAndParent;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\DummyInDifferentNs;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\DummyWithStaticGetterInDifferentNs;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\DummyWithTemplateAndParentInDifferentNs;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\IFace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\IntRangeDummy;
@@ -276,6 +277,7 @@ class PhpStanExtractorTest extends TestCase
     {
         yield [ParentDummy::class, 'propertyTypeStatic', Type::object(ParentDummy::class)];
         yield [Dummy::class, 'propertyTypeStatic', Type::object(Dummy::class)];
+        yield [DummyWithStaticGetterInDifferentNs::class, 'static', Type::object(DummyWithStaticGetterInDifferentNs::class)];
     }
 
     public function testPropertiesParentType()
