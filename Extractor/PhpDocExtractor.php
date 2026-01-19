@@ -12,6 +12,8 @@
 namespace Symfony\Component\PropertyInfo\Extractor;
 
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Tags\Factory\StaticMethod;
+use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\DocBlock\Tags\InvalidTag;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\DocBlockFactoryInterface;
@@ -61,6 +63,10 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
     {
         if (!class_exists(DocBlockFactory::class)) {
             throw new \LogicException(\sprintf('Unable to use the "%s" class as the "phpdocumentor/reflection-docblock" package is not installed. Try running composer require "phpdocumentor/reflection-docblock".', __CLASS__));
+        }
+
+        if (!is_subclass_of(Generic::class, StaticMethod::class)) {
+            throw new \LogicException('symfony/property-info v6 does not support phpdocumentor/reflection-docblock v6. Please stick to ^5.2 in your composer.json file.');
         }
 
         $this->docBlockFactory = $docBlockFactory ?: DocBlockFactory::createInstance();
