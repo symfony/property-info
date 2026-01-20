@@ -860,6 +860,10 @@ class PhpDocExtractorTest extends TestCase
         yield ['false', Type::false()];
         yield ['valueOfStrings', null];
         yield ['valueOfIntegers', null];
+        yield ['valueOfIntEnum', null];
+        yield ['valueOfStringEnum', null];
+        yield ['valueOfNullableIntEnum', null];
+        yield ['valueOfNullableStringEnum', null];
         yield ['keyOfStrings', null];
         yield ['keyOfIntegers', null];
         yield ['arrayKey', null];
