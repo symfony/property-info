@@ -165,6 +165,10 @@ final class PhpDocTypeHelper
             }
         }
 
+        if (!$unionTypes) {
+            return null;
+        }
+
         $type = 1 === \count($unionTypes) ? $unionTypes[0] : Type::union(...$unionTypes);
 
         return $nullable ? Type::nullable($type) : $type;
