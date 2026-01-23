@@ -21,6 +21,7 @@ use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Nullable;
+use phpDocumentor\Reflection\Types\Scalar;
 use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\TypeIdentifier;
@@ -92,6 +93,10 @@ final class PhpDocTypeHelper
             if (null !== $t = $this->createType($varType)) {
                 $unionTypes[] = $t;
             }
+        }
+
+        if (!$unionTypes) {
+            return null;
         }
 
         $type = 1 === \count($unionTypes) ? $unionTypes[0] : Type::union(...$unionTypes);
