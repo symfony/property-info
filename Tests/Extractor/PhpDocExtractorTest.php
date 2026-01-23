@@ -447,7 +447,23 @@ class PhpDocExtractorTest extends TestCase
     {
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getType()" instead.');
 
-        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'scalar')], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
+        $this->assertEquals([
+            new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo')
+        ], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
+    }
+
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
+    public function testScalarPseudoTypeLegacy()
+    {
+        $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getType()" instead.');
+
+        $this->assertEquals([
+            new LegacyType(LegacyType::BUILTIN_TYPE_BOOL),
+            new LegacyType(LegacyType::BUILTIN_TYPE_FLOAT),
+            new LegacyType(LegacyType::BUILTIN_TYPE_INT),
+            new LegacyType(LegacyType::BUILTIN_TYPE_STRING),
+        ], $this->extractor->getTypes(PseudoTypeDummy::class, 'scalarPseudoType'));
     }
 
     #[IgnoreDeprecations]
@@ -814,8 +830,14 @@ class PhpDocExtractorTest extends TestCase
 
     public function testUnknownPseudoType()
     {
-        $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'unknownPseudoType'));
+        $this->assertEquals(Type::object('Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo'), $this->extractor->getType(PseudoTypeDummy::class, 'unknownPseudoType'));
     }
+
+    public function testScalarPseudoType()
+    {
+        $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'scalarPseudoType'));
+    }
+
 
     #[DataProvider('constructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)
