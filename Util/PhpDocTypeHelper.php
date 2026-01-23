@@ -21,6 +21,7 @@ use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Nullable;
+use phpDocumentor\Reflection\Types\Scalar;
 use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\PropertyInfo\Type;
 
@@ -54,6 +55,15 @@ final class PhpDocTypeHelper
         if ($varType instanceof Nullable) {
             $nullable = true;
             $varType = $varType->getActualType();
+        }
+
+        if ($varType instanceof Scalar) {
+            return [
+                new Type(Type::BUILTIN_TYPE_BOOL),
+                new Type(Type::BUILTIN_TYPE_FLOAT),
+                new Type(Type::BUILTIN_TYPE_INT),
+                new Type(Type::BUILTIN_TYPE_STRING),
+            ];
         }
 
         if (!$varType instanceof Compound) {

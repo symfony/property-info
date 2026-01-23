@@ -400,7 +400,19 @@ class PhpDocExtractorTest extends TestCase
 
     public function testUnknownPseudoType()
     {
-        $this->assertEquals([new Type(Type::BUILTIN_TYPE_OBJECT, false, 'scalar')], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
+        $this->assertEquals([
+            new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo')
+        ], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
+    }
+
+    public function testScalarPseudoType()
+    {
+        $this->assertEquals([
+            new Type(Type::BUILTIN_TYPE_BOOL),
+            new Type(Type::BUILTIN_TYPE_FLOAT),
+            new Type(Type::BUILTIN_TYPE_INT),
+            new Type(Type::BUILTIN_TYPE_STRING),
+        ], $this->extractor->getTypes(PseudoTypeDummy::class, 'scalarPseudoType'));
     }
 
     public function testGenericInterface()
