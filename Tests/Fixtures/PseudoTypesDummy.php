@@ -61,6 +61,18 @@ class PseudoTypesDummy
     /** @var value-of<self::INTEGERS> */
     public $valueOfIntegers;
 
+    /** @var value-of<IntEnumDummy> */
+    public $valueOfIntEnum;
+
+    /** @var value-of<StringEnumDummy> */
+    public $valueOfStringEnum;
+
+    /** @var value-of<IntEnumDummy>|null */
+    public $valueOfNullableIntEnum;
+
+    /** @var value-of<StringEnumDummy>|null */
+    public $valueOfNullableStringEnum;
+
     /** @var key-of<self::STRINGS> */
     public $keyOfStrings;
 

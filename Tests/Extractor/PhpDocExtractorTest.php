@@ -330,8 +330,14 @@ class PhpDocExtractorTest extends TestCase
 
     public function testUnknownPseudoType()
     {
-        $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'unknownPseudoType'));
+        $this->assertEquals(Type::object('Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo'), $this->extractor->getType(PseudoTypeDummy::class, 'unknownPseudoType'));
     }
+
+    public function testScalarPseudoType()
+    {
+        $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'scalarPseudoType'));
+    }
+
 
     #[DataProvider('constructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)
@@ -376,6 +382,10 @@ class PhpDocExtractorTest extends TestCase
         yield ['false', Type::false()];
         yield ['valueOfStrings', null];
         yield ['valueOfIntegers', null];
+        yield ['valueOfIntEnum', null];
+        yield ['valueOfStringEnum', null];
+        yield ['valueOfNullableIntEnum', null];
+        yield ['valueOfNullableStringEnum', null];
         yield ['keyOfStrings', null];
         yield ['keyOfIntegers', null];
         yield ['arrayKey', null];
