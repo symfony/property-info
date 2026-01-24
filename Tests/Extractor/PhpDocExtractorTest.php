@@ -338,7 +338,6 @@ class PhpDocExtractorTest extends TestCase
         $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'scalarPseudoType'));
     }
 
-
     #[DataProvider('constructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)
     {
