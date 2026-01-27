@@ -19,10 +19,13 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyCollection;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentUsingTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentWithPromotedSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithConstructorOverride;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithoutConstructorOverride;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ClassUsingNestedTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ClassUsingTraitWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentUsingTraitWithSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedPropertyDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy;
@@ -541,6 +544,33 @@ class PhpDocExtractorTest extends TestCase
         yield 'nested trait property' => [ClassUsingNestedTrait::class, 'innerSelfProp', ClassUsingNestedTrait::class];
         yield 'promoted property' => [ParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
         yield 'promoted property from child' => [ChildOfParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
+    }
+
+    /**
+     * @dataProvider inheritedPromotedPropertyWithConstructorOverrideProvider
+     */
+    public function testInheritedPromotedPropertyWithConstructorOverride(string $class, string $property, ?array $expectedTypes)
+    {
+        $this->assertEquals($expectedTypes, $this->extractor->getTypes($class, $property));
+    }
+
+    /**
+     * @return iterable<string, array{0: class-string, 1: string, 2: ?array}>
+     */
+    public static function inheritedPromotedPropertyWithConstructorOverrideProvider(): iterable
+    {
+        $expectedItemsType = [new Type(
+            Type::BUILTIN_TYPE_ARRAY,
+            false,
+            null,
+            true,
+            new Type(Type::BUILTIN_TYPE_STRING),
+            new Type(Type::BUILTIN_TYPE_INT)
+        )];
+
+        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType,];
+        yield 'child without constructor override' => [ChildWithoutConstructorOverride::class, 'items', $expectedItemsType];
+        yield 'child with constructor override' => [ChildWithConstructorOverride::class, 'items', $expectedItemsType];
     }
 }
 
