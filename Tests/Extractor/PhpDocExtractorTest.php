@@ -23,10 +23,13 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyCollection;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentUsingTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentWithPromotedSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithConstructorOverride;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithoutConstructorOverride;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ClassUsingNestedTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ClassUsingTraitWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentUsingTraitWithSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedPropertyDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\InvalidDummy;
@@ -328,6 +331,16 @@ class PhpDocExtractorTest extends TestCase
     }
 
     /**
+     * @return iterable<array{0: class-string, 1: string, 2: ?Type}>
+     */
+    public static function propertiesParentTypeProvider(): iterable
+    {
+        yield [ParentDummy::class, 'parentAnnotationNoParent', Type::object('parent')];
+        yield [Dummy::class, 'parentAnnotation', Type::object(ParentDummy::class)];
+    }
+
+
+    /**
      * @param class-string $class
      * @param class-string $expectedResolvedClass
      */
@@ -359,13 +372,22 @@ class PhpDocExtractorTest extends TestCase
         yield 'promoted property from child' => [ChildOfParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
     }
 
-    /**
-     * @return iterable<array{0: class-string, 1: string, 2: ?Type}>
-     */
-    public static function propertiesParentTypeProvider(): iterable
+    #[DataProvider('inheritedPromotedPropertyWithConstructorOverrideProvider')]
+    public function testInheritedPromotedPropertyWithConstructorOverride(string $class, string $property, ?Type $expectedType)
     {
-        yield [ParentDummy::class, 'parentAnnotationNoParent', Type::object('parent')];
-        yield [Dummy::class, 'parentAnnotation', Type::object(ParentDummy::class)];
+        $this->assertEquals($expectedType, $this->extractor->getType($class, $property));
+    }
+
+    /**
+     * @return iterable<string, array{0: class-string, 1: string, 2: ?Type}>
+     */
+    public static function inheritedPromotedPropertyWithConstructorOverrideProvider(): iterable
+    {
+        $expectedItemsType = Type::dict(Type::int(), Type::string());
+
+        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType];
+        yield 'child without constructor override' => [ChildWithoutConstructorOverride::class, 'items', $expectedItemsType];
+        yield 'child with constructor override' => [ChildWithConstructorOverride::class, 'items', $expectedItemsType];
     }
 
     public function testUnknownPseudoType()
