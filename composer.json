@@ -35,7 +35,7 @@
         "symfony/serializer": "^7.4|^8.0"
     },
     "conflict": {
-        "phpdocumentor/reflection-docblock": "<5.2",
+        "phpdocumentor/reflection-docblock": "<5.2|>=6",
         "phpdocumentor/type-resolver": "<1.5.1"
     },
     "autoload": {
