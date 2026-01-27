@@ -249,8 +249,8 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         $ucFirstProperty = ucfirst($property);
 
         switch (true) {
-            case $reflectionProperty?->isPromoted() && $docBlock = $this->getDocBlockFromConstructor($class, $property):
-                $data = [$docBlock, self::MUTATOR, null, $reflectionProperty->getDeclaringClass()->getName()];
+            case $reflectionProperty?->isPromoted() && $docBlock = $this->getDocBlockFromConstructor($reflectionProperty->class, $property):
+                $data = [$docBlock, self::MUTATOR, null, $reflectionProperty->class];
                 break;
 
             case [$docBlock, $declaringClass] = $this->getDocBlockFromProperty($class, $property):
