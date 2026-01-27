@@ -132,7 +132,7 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         trigger_deprecation('symfony/property-info', '7.3', 'The "%s()" method is deprecated, use "%s::getType()" instead.', __METHOD__, self::class);
 
         /** @var DocBlock $docBlock */
-        [$docBlock, $source, $prefix] = $this->findDocBlock($class, $property);
+        [$docBlock, $source, $prefix, $declaringClass] = $this->findDocBlock($class, $property);
         if (!$docBlock) {
             return null;
         }
@@ -151,12 +151,15 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
                 foreach ($this->phpDocTypeHelper->getTypes($tag->getType()) as $type) {
                     switch ($type->getClassName()) {
                         case 'self':
+                            $resolvedClass = $declaringClass ?? $class;
+                            break;
+
                         case 'static':
                             $resolvedClass = $class;
                             break;
 
                         case 'parent':
-                            if (false !== $resolvedClass = $parentClass ??= get_parent_class($class)) {
+                            if (false !== $resolvedClass = $parentClass ??= get_parent_class($declaringClass ?? $class)) {
                                 break;
                             }
                             // no break

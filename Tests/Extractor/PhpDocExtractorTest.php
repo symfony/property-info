@@ -1033,6 +1033,41 @@ class PhpDocExtractorTest extends TestCase
         $this->assertCount(1, $types);
         $this->assertEquals(LegacyType::BUILTIN_TYPE_STRING, $types[0]->getBuiltinType());
     }
+
+    /**
+     * @param class-string $class
+     * @param class-string $expectedResolvedClass
+     *
+     * @group legacy
+     *
+     * @dataProvider selfDocBlockResolutionProviderLegacy
+     */
+    public function testSelfDocBlockResolvesToDeclaringClassLegacy(string $class, string $property, string $expectedResolvedClass)
+    {
+        $this->assertEquals([new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, $expectedResolvedClass)], $this->extractor->getTypes($class, $property));
+    }
+
+    /**
+     * @return iterable<string, array{0: class-string, 1: string, 2: class-string}>
+     */
+    public static function selfDocBlockResolutionProviderLegacy(): iterable
+    {
+        yield 'parent property' => [ParentWithSelfDocBlock::class, 'selfProp', ParentWithSelfDocBlock::class];
+        yield 'parent property from child' => [ChildWithSelfDocBlock::class, 'selfProp', ParentWithSelfDocBlock::class];
+        yield 'parent accessor' => [ParentWithSelfDocBlock::class, 'selfAccessor', ParentWithSelfDocBlock::class];
+        yield 'parent accessor from child' => [ChildWithSelfDocBlock::class, 'selfAccessor', ParentWithSelfDocBlock::class];
+        yield 'parent mutator' => [ParentWithSelfDocBlock::class, 'selfMutator', ParentWithSelfDocBlock::class];
+        yield 'parent mutator from child' => [ChildWithSelfDocBlock::class, 'selfMutator', ParentWithSelfDocBlock::class];
+        yield 'trait property' => [ClassUsingTraitWithSelfDocBlock::class, 'selfTraitProp', ClassUsingTraitWithSelfDocBlock::class];
+        yield 'trait accessor' => [ClassUsingTraitWithSelfDocBlock::class, 'selfTraitAccessor', ClassUsingTraitWithSelfDocBlock::class];
+        yield 'trait mutator' => [ClassUsingTraitWithSelfDocBlock::class, 'selfTraitMutator', ClassUsingTraitWithSelfDocBlock::class];
+        yield 'trait property from child' => [ChildOfParentUsingTrait::class, 'selfTraitProp', ParentUsingTraitWithSelfDocBlock::class];
+        yield 'trait accessor from child' => [ChildOfParentUsingTrait::class, 'selfTraitAccessor', ParentUsingTraitWithSelfDocBlock::class];
+        yield 'trait mutator from child' => [ChildOfParentUsingTrait::class, 'selfTraitMutator', ParentUsingTraitWithSelfDocBlock::class];
+        yield 'nested trait property' => [ClassUsingNestedTrait::class, 'innerSelfProp', ClassUsingNestedTrait::class];
+        yield 'promoted property' => [ParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
+        yield 'promoted property from child' => [ChildOfParentWithPromotedSelfDocBlock::class, 'promotedSelfProp', ParentWithPromotedSelfDocBlock::class];
+    }
 }
 
 class EmptyDocBlock
