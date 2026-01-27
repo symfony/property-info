@@ -830,9 +830,8 @@ class PhpDocExtractorTest extends TestCase
     /**
      * @param class-string $class
      * @param class-string $expectedResolvedClass
-     *
-     * @dataProvider selfDocBlockResolutionProvider
      */
+    #[DataProvider('selfDocBlockResolutionProvider')]
     public function testSelfDocBlockResolvesToDeclaringClass(string $class, string $property, string $expectedResolvedClass)
     {
         $this->assertEquals(Type::object($expectedResolvedClass), $this->extractor->getType($class, $property));
