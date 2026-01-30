@@ -339,7 +339,6 @@ class PhpDocExtractorTest extends TestCase
         yield [Dummy::class, 'parentAnnotation', Type::object(ParentDummy::class)];
     }
 
-
     /**
      * @param class-string $class
      * @param class-string $expectedResolvedClass
