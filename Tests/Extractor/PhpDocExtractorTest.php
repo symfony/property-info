@@ -12,6 +12,7 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\PseudoTypes\Generic;
 use phpDocumentor\Reflection\PseudoTypes\IntMask;
 use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,10 +20,12 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Clazz;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DockBlockFallback;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyCollection;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyGeneric;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentUsingTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithConstructorOverride;
@@ -34,6 +37,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentUsingTraitWith
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedPropertyDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\IFace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\InvalidDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy;
@@ -459,7 +463,7 @@ class PhpDocExtractorTest extends TestCase
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getType()" instead.');
 
         $this->assertEquals([
-            new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo')
+            new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo'),
         ], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
     }
 
@@ -479,11 +483,110 @@ class PhpDocExtractorTest extends TestCase
 
     #[IgnoreDeprecations]
     #[Group('legacy')]
-    public function testGenericInterface()
+    #[DataProvider('legacyGenericsProvider')]
+    public function testGenericsLegacy(string $class, string $property, array $expectedTypes)
     {
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::getType()" instead.');
 
-        $this->assertNull($this->extractor->getTypes(Dummy::class, 'genericInterface'));
+        $this->assertEquals($expectedTypes, $this->extractor->getTypes($class, $property));
+    }
+
+    /**
+     * @return iterable<array{0: class-string, 1: string, 2: list<LegacyType>}>
+     */
+    public static function legacyGenericsProvider(): iterable
+    {
+        yield [
+            Dummy::class,
+            'genericInterface',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, 'BackedEnum', false, [new LegacyType(LegacyType::BUILTIN_TYPE_STRING), new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_STRING)])],
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicClass',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Clazz::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_STRING), new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicInterface',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, IFace::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_STRING), new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+        ];
+        yield [
+            DummyGeneric::class,
+            'twoGenerics',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Clazz::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableClass',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, true, Clazz::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_STRING), new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableInterface',
+            [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, true, IFace::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_STRING), new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+        ];
+
+        // phpdocumentor/reflection-docblock >= 6
+        if (class_exists(Generic::class)) {
+            yield [
+                DummyGeneric::class,
+                'threeGenerics',
+                [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Clazz::class, false, [new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)])],
+            ];
+        }
+    }
+
+    #[DataProvider('genericsProvider')]
+    public function testGenerics(string $class, string $property, Type $expectedType)
+    {
+        $this->assertEquals($expectedType, $this->extractor->getType($class, $property));
+    }
+
+    /**
+     * @return iterable<array{0: class-string, 1: string, 2: Type}>
+     */
+    public static function genericsProvider(): iterable
+    {
+        yield [
+            Dummy::class,
+            'genericInterface',
+            Type::generic(Type::object(\BackedEnum::class), Type::string()),
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicClass',
+            Type::generic(Type::object(Clazz::class), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicInterface',
+            Type::generic(Type::object(IFace::class), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'twoGenerics',
+            Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableClass',
+            Type::nullable(Type::generic(Type::object(Clazz::class), Type::object(Dummy::class))),
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableInterface',
+            Type::nullable(Type::generic(Type::object(IFace::class), Type::object(Dummy::class))),
+        ];
+
+        // phpdocumentor/reflection-docblock >= 6
+        if (class_exists(Generic::class)) {
+            yield [
+                DummyGeneric::class,
+                'threeGenerics',
+                Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class), Type::string()),
+            ];
+        }
     }
 
     #[IgnoreDeprecations]
@@ -839,7 +942,6 @@ class PhpDocExtractorTest extends TestCase
         yield [Dummy::class, 'parentAnnotation', Type::object(ParentDummy::class)];
     }
 
-
     /**
      * @param class-string $class
      * @param class-string $expectedResolvedClass
@@ -894,7 +996,7 @@ class PhpDocExtractorTest extends TestCase
             new LegacyType(LegacyType::BUILTIN_TYPE_INT)
         )];
 
-        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType,];
+        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType];
         yield 'child without constructor override' => [ChildWithoutConstructorOverride::class, 'items', $expectedItemsType];
         yield 'child with constructor override' => [ChildWithConstructorOverride::class, 'items', $expectedItemsType];
     }
@@ -926,7 +1028,6 @@ class PhpDocExtractorTest extends TestCase
     {
         $this->assertEquals(Type::object('scalar'), $this->extractor->getType(PseudoTypeDummy::class, 'scalarPseudoType'));
     }
-
 
     #[DataProvider('constructorTypesProvider')]
     public function testExtractConstructorType(string $property, ?Type $type)

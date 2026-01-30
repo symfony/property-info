@@ -1115,6 +1115,14 @@ class PhpStanExtractorTest extends TestCase
             'nullableInterface',
             Type::nullable(Type::generic(Type::object(IFace::class), Type::object(Dummy::class))),
         ];
+        yield [
+            'twoGenerics',
+            Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class)),
+        ];
+        yield [
+            'threeGenerics',
+            Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class), Type::string()),
+        ];
     }
 
     #[DataProvider('descriptionsProvider')]
