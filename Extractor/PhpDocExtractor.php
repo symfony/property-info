@@ -223,7 +223,7 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     private function filterDocBlockParams(DocBlock $docBlock, string $allowedParam): DocBlock
     {
-        $tags = array_values(array_filter($docBlock->getTagsByName('param'), fn ($tag) => $tag instanceof DocBlock\Tags\Param && $allowedParam === $tag->getVariableName()));
+        $tags = array_values(array_filter($docBlock->getTagsByName('param'), static fn ($tag) => $tag instanceof DocBlock\Tags\Param && $allowedParam === $tag->getVariableName()));
 
         return new DocBlock($docBlock->getSummary(), $docBlock->getDescription(), $tags, $docBlock->getContext(),
             $docBlock->getLocation(), $docBlock->isTemplateStart(), $docBlock->isTemplateEnd());
@@ -294,11 +294,20 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
             }
         }
 
+        $context = $this->createFromReflector($reflector);
+
         try {
             $declaringClass = $reflector->isTrait() ? $originalClass : $reflector->getName();
 
-            return [$this->docBlockFactory->create($reflectionProperty, $this->createFromReflector($reflector)), $declaringClass];
-        } catch (\InvalidArgumentException|\RuntimeException) {
+            return [$this->docBlockFactory->create($reflectionProperty, $context), $declaringClass];
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            if ($e instanceof \RuntimeException) {
+                // Workaround for phpdocumentor/reflection-docblock < 6 not supporting ?Type<...> syntax
+                if (($rawDoc = $reflectionProperty->getDocComment()) && $docBlock = $this->getNullableGenericDocBlock($rawDoc, $context)) {
+                    return [$docBlock, $declaringClass ?? ($reflector->isTrait() ? $originalClass : $reflector->getName())];
+                }
+            }
+
             return null;
         }
     }
@@ -349,10 +358,34 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
             }
         }
 
+        $context = $this->createFromReflector($reflector);
+
         try {
             $declaringClass = $reflector->isTrait() ? $originalClass : $reflector->getName();
 
-            return [$this->docBlockFactory->create($method, $this->createFromReflector($reflector)), $prefix, $declaringClass];
+            return [$this->docBlockFactory->create($method, $context), $prefix, $declaringClass];
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            if ($e instanceof \RuntimeException) {
+                // Workaround for phpdocumentor/reflection-docblock < 6 not supporting ?Type<...> syntax
+                if (($rawDoc = $method->getDocComment()) && $docBlock = $this->getNullableGenericDocBlock($rawDoc, $context)) {
+                    return [$docBlock, $prefix, $declaringClass ?? ($reflector->isTrait() ? $originalClass : $reflector->getName())];
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private function getNullableGenericDocBlock(string $rawDoc, Context $context): ?DocBlock
+    {
+        // Converts "?Type<...>" to "Type<...>|null"
+        $processedDoc = preg_replace('/@(var|param|return)\s+\?(\S+)/', '@$1 $2|null', $rawDoc);
+        if ($processedDoc === $rawDoc) {
+            return null;
+        }
+
+        try {
+            return $this->docBlockFactory->create($processedDoc, $context);
         } catch (\InvalidArgumentException|\RuntimeException) {
             return null;
         }
