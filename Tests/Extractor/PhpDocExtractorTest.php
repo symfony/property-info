@@ -12,15 +12,18 @@
 namespace Symfony\Component\PropertyInfo\Tests\Extractor;
 
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\PseudoTypes\Generic;
 use phpDocumentor\Reflection\PseudoTypes\IntMask;
 use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\Clazz;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DockBlockFallback;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyCollection;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyGeneric;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentUsingTrait;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildOfParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ChildWithConstructorOverride;
@@ -32,6 +35,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentUsingTraitWith
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedPropertyDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithPromotedSelfDocBlock;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Extractor\ParentWithSelfDocBlock;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\IFace;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\InvalidDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php80Dummy;
@@ -70,6 +74,59 @@ class PhpDocExtractorTest extends TestCase
     public function testReturnNullOnEmptyDocBlock()
     {
         $this->assertNull($this->extractor->getShortDescription(EmptyDocBlock::class, 'foo'));
+    }
+
+
+    #[DataProvider('genericsProvider')]
+    public function testGenerics(string $class, string $property, Type $expectedType)
+    {
+        $this->assertEquals($expectedType, $this->extractor->getType($class, $property));
+    }
+
+    /**
+     * @return iterable<array{0: class-string, 1: string, 2: Type}>
+     */
+    public static function genericsProvider(): iterable
+    {
+        yield [
+            Dummy::class,
+            'genericInterface',
+            Type::generic(Type::object(\BackedEnum::class), Type::string()),
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicClass',
+            Type::generic(Type::object(Clazz::class), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'basicInterface',
+            Type::generic(Type::object(IFace::class), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'twoGenerics',
+            Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class)),
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableClass',
+            Type::nullable(Type::generic(Type::object(Clazz::class), Type::object(Dummy::class))),
+        ];
+        yield [
+            DummyGeneric::class,
+            'nullableInterface',
+            Type::nullable(Type::generic(Type::object(IFace::class), Type::object(Dummy::class))),
+        ];
+
+        // phpdocumentor/reflection-docblock >= 6
+        if (class_exists(Generic::class)) {
+            yield [
+                DummyGeneric::class,
+                'threeGenerics',
+                Type::generic(Type::object(Clazz::class), Type::int(), Type::object(Dummy::class), Type::string()),
+            ];
+        }
     }
 
     public function testParamTagTypeIsOmitted()
