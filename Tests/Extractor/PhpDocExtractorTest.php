@@ -686,6 +686,7 @@ class PhpDocExtractorTest extends TestCase
         yield ['nestedCollection', Type::list(Type::list(Type::string())), null, null];
         yield ['mixedCollection', Type::array(), null, null];
         yield ['nullableTypedCollection', Type::nullable(Type::list(Type::object(Dummy::class))), null, null];
+        yield ['unionWithMixed', Type::mixed(), null, null];
         yield ['a', Type::int(), 'A.', null];
         yield ['b', Type::nullable(Type::object(ParentDummy::class)), 'B.', null];
         yield ['c', Type::nullable(Type::bool()), null, null];
