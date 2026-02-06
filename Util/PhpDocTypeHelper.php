@@ -27,6 +27,7 @@ use phpDocumentor\Reflection\Types\Nullable;
 use phpDocumentor\Reflection\Types\Scalar as LegacyScalar;
 use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 
 // Workaround for phpdocumentor/type-resolver < 1.6
@@ -93,9 +94,15 @@ final class PhpDocTypeHelper
 
         $unionTypes = [];
         foreach ($varTypes as $varType) {
-            if (null !== $t = $this->createType($varType)) {
-                $unionTypes[] = $t;
+            if (!$t = $this->createType($varType)) {
+                continue;
             }
+
+            if ($t instanceof BuiltinType && TypeIdentifier::MIXED === $t->getTypeIdentifier()) {
+                return Type::mixed();
+            }
+
+            $unionTypes[] = $t;
         }
 
         if (!$unionTypes) {
