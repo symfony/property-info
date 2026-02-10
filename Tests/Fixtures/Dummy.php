@@ -177,6 +177,9 @@ class Dummy extends ParentDummy
      */
     public $genericInterface;
 
+    /** @var string|mixed  */
+    public $unionWithMixed;
+
     public static function getStatic()
     {
     }
