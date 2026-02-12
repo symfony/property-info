@@ -190,6 +190,7 @@ class PhpDocExtractorTest extends TestCase
             ['self', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class)], null, null],
             ['collectionAsObject', [new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, DummyCollection::class, true, [new LegacyType(LegacyType::BUILTIN_TYPE_INT)], [new LegacyType(LegacyType::BUILTIN_TYPE_STRING)])], null, null],
             ['nullableTypedCollection', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, true, null, true, new LegacyType(LegacyType::BUILTIN_TYPE_INT), new LegacyType(LegacyType::BUILTIN_TYPE_OBJECT, false, Dummy::class))], null, null],
+            ['unionWithMixed', null, null, null],
         ];
     }
 
@@ -762,6 +763,8 @@ class PhpDocExtractorTest extends TestCase
         yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
         yield ['nestedCollection', Type::list(Type::list(Type::string()))];
         yield ['mixedCollection', Type::array()];
+        yield ['nullableTypedCollection', Type::nullable(Type::list(Type::object(Dummy::class)))];
+        yield ['unionWithMixed', Type::mixed()];
         yield ['a', null];
         yield ['b', null];
         yield ['c', null];
@@ -829,6 +832,8 @@ class PhpDocExtractorTest extends TestCase
         yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
         yield ['nestedCollection', Type::list(Type::list(Type::string()))];
         yield ['mixedCollection', Type::array()];
+        yield ['nullableTypedCollection', Type::nullable(Type::list(Type::object(Dummy::class)))];
+        yield ['unionWithMixed', Type::mixed()];
         yield ['a', null];
         yield ['b', null];
         yield ['c', Type::nullable(Type::bool())];

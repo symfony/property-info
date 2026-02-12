@@ -93,6 +93,10 @@ final class PhpDocTypeHelper
         for ($typeIndex = 0; $varType->has($typeIndex); ++$typeIndex) {
             $type = $varType->get($typeIndex);
 
+            if ($type instanceof Mixed_) {
+                return [];
+            }
+
             if ($type instanceof ConstExpression) {
                 // It's safer to fall back to other extractors here, as resolving const types correctly is not easy at the moment
                 return [];
