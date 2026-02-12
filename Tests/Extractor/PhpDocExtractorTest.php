@@ -229,6 +229,8 @@ class PhpDocExtractorTest extends TestCase
         yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
         yield ['nestedCollection', Type::list(Type::list(Type::string()))];
         yield ['mixedCollection', Type::array()];
+        yield ['nullableTypedCollection', Type::nullable(Type::list(Type::object(Dummy::class)))];
+        yield ['unionWithMixed', Type::mixed()];
         yield ['a', null];
         yield ['b', null];
         yield ['c', null];
@@ -289,6 +291,8 @@ class PhpDocExtractorTest extends TestCase
         yield ['collection', Type::list(Type::object(\DateTimeImmutable::class))];
         yield ['nestedCollection', Type::list(Type::list(Type::string()))];
         yield ['mixedCollection', Type::array()];
+        yield ['nullableTypedCollection', Type::nullable(Type::list(Type::object(Dummy::class)))];
+        yield ['unionWithMixed', Type::mixed()];
         yield ['a', null];
         yield ['b', null];
         yield ['c', Type::nullable(Type::bool())];
