@@ -808,11 +808,11 @@ class ReflectionExtractorTest extends TestCase
 
     public function testHasserDoesNotOverridePropertyType()
     {
-        $this->assertEquals([new Type(Type::BUILTIN_TYPE_STRING, true)], $this->extractor->getTypes(DummyWithHasser::class, 'url'));
+        $this->assertEquals(Type::nullable(Type::string()), $this->extractor->getType(DummyWithHasser::class, 'url'));
     }
 
     public function testIsserUsedForBoolPropertyWithoutOtherTypeSource()
     {
-        $this->assertEquals([new Type(Type::BUILTIN_TYPE_BOOL)], $this->extractor->getTypes(DummyWithHasser::class, 'enabled'));
+        $this->assertEquals(Type::bool(), $this->extractor->getType(DummyWithHasser::class, 'enabled'));
     }
 }
