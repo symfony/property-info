@@ -166,7 +166,8 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
             return $fromMutator;
         }
 
-        if ($fromAccessor = $this->extractFromAccessor($class, $property)) {
+        $allowedPrefixes = array_diff($this->accessorPrefixes, ['is', 'can', 'has']);
+        if ($fromAccessor = $this->extractFromAccessor($class, $property, $allowedPrefixes)) {
             return $fromAccessor;
         }
 
@@ -179,6 +180,11 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
 
         if ($fromPropertyDeclaration = $this->extractFromPropertyDeclaration($class, $property)) {
             return $fromPropertyDeclaration;
+        }
+
+        $allowedPrefixes = array_diff($this->accessorPrefixes, $allowedPrefixes);
+        if ($fromAccessor = $this->extractFromAccessor($class, $property, $allowedPrefixes)) {
+            return $fromAccessor;
         }
 
         return null;
@@ -578,10 +584,14 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
      *
      * @return LegacyType[]|null
      */
-    private function extractFromAccessor(string $class, string $property): ?array
+    private function extractFromAccessor(string $class, string $property, array $allowedPrefixes): ?array
     {
         [$reflectionMethod, $prefix] = $this->getAccessorMethod($class, $property);
         if (null === $reflectionMethod) {
+            return null;
+        }
+
+        if (!\in_array($prefix, $allowedPrefixes, true)) {
             return null;
         }
 
