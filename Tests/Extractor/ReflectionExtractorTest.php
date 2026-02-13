@@ -21,6 +21,7 @@ use Symfony\Component\PropertyInfo\Tests\Fixtures\AsymmetricVisibility;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ConstructorDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\DefaultValue;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Dummy;
+use Symfony\Component\PropertyInfo\Tests\Fixtures\DummyWithHasser;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\NotInstantiable;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\ParentDummy;
 use Symfony\Component\PropertyInfo\Tests\Fixtures\Php71Dummy;
@@ -803,5 +804,15 @@ class ReflectionExtractorTest extends TestCase
         $this->assertTrue($this->extractor->isReadable(VoidNeverReturnTypeDummy::class, 'normalProperty'));
         $this->assertNull($this->extractor->getReadInfo(VoidNeverReturnTypeDummy::class, 'voidProperty'));
         $this->assertNull($this->extractor->getReadInfo(VoidNeverReturnTypeDummy::class, 'neverProperty'));
+    }
+
+    public function testHasserDoesNotOverridePropertyType()
+    {
+        $this->assertEquals([new Type(Type::BUILTIN_TYPE_STRING, true)], $this->extractor->getTypes(DummyWithHasser::class, 'url'));
+    }
+
+    public function testIsserUsedForBoolPropertyWithoutOtherTypeSource()
+    {
+        $this->assertEquals([new Type(Type::BUILTIN_TYPE_BOOL)], $this->extractor->getTypes(DummyWithHasser::class, 'enabled'));
     }
 }
