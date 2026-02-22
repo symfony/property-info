@@ -197,6 +197,13 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
             return null;
         }
 
+        if ($reflectionProperty->hasHook(\PropertyHookType::Set) && $setHookParams = $reflectionProperty->getHook(\PropertyHookType::Set)->getParameters()) {
+            try {
+                return $this->typeResolver->resolve($setHookParams[0]);
+            } catch (UnsupportedException) {
+            }
+        }
+
         try {
             return $this->typeResolver->resolve($reflectionProperty);
         } catch (UnsupportedException) {

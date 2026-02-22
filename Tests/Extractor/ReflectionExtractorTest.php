@@ -541,6 +541,16 @@ class ReflectionExtractorTest extends TestCase
         $this->assertTrue($this->extractor->isWritable(VirtualProperties::class, 'virtualHook'));
     }
 
+    public function testPropertyHookExpandedSetterType()
+    {
+        $this->assertEquals(Type::nullable(Type::string()), $this->extractor->getType(VirtualProperties::class, 'expandedSetterType'));
+    }
+
+    public function testPropertyHookSameSetterType()
+    {
+        $this->assertEquals(Type::string(), $this->extractor->getType(VirtualProperties::class, 'sameSetterType'));
+    }
+
     #[DataProvider('provideAsymmetricVisibilityMutator')]
     public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
     {
