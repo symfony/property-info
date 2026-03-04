@@ -1084,7 +1084,7 @@ class PhpStanExtractorTest extends TestCase
     public function testGenericInterface()
     {
         $this->assertEquals(
-            Type::generic(Type::enum(\BackedEnum::class), Type::string()),
+            Type::generic(Type::object(\BackedEnum::class), Type::string()),
             $this->extractor->getType(Dummy::class, 'genericInterface'),
         );
     }
