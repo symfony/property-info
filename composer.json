@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.4.1",
         "symfony/string": "^7.4|^8.0",
         "symfony/type-info": "^7.4.7|^8.0.7"
     },
