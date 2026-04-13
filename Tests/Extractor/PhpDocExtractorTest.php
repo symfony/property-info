@@ -77,7 +77,6 @@ class PhpDocExtractorTest extends TestCase
         $this->assertNull($this->extractor->getShortDescription(EmptyDocBlock::class, 'foo'));
     }
 
-
     #[DataProvider('genericsProvider')]
     public function testGenerics(string $class, string $property, Type $expectedType)
     {
