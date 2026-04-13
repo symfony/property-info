@@ -413,7 +413,7 @@ class PhpDocExtractorTest extends TestCase
     public function testUnknownPseudoType()
     {
         $this->assertEquals([
-            new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo')
+            new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\\Component\\PropertyInfo\\Tests\\Fixtures\\unknownpseudo'),
         ], $this->extractor->getTypes(PseudoTypeDummy::class, 'unknownPseudoType'));
     }
 
@@ -569,7 +569,7 @@ class PhpDocExtractorTest extends TestCase
             new Type(Type::BUILTIN_TYPE_INT)
         )];
 
-        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType,];
+        yield 'parent promoted property' => [ParentWithPromotedPropertyDocBlock::class, 'items', $expectedItemsType];
         yield 'child without constructor override' => [ChildWithoutConstructorOverride::class, 'items', $expectedItemsType];
         yield 'child with constructor override' => [ChildWithConstructorOverride::class, 'items', $expectedItemsType];
     }

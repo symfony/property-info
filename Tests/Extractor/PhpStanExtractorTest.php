@@ -520,6 +520,7 @@ class PhpStanExtractorTest extends TestCase
 
     /**
      * @param list<Type> $expectedTypes
+     *
      * @dataProvider genericsProvider
      */
     public function testGenericsLegacy(string $property, array $expectedTypes)
