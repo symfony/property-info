@@ -562,7 +562,7 @@ class PhpStanExtractorTest extends TestCase
             [Php80Dummy::class, 'promotedWithDocComment', [new LegacyType(LegacyType::BUILTIN_TYPE_STRING)]],
             [Php80Dummy::class, 'promotedAndMutated', [new LegacyType(LegacyType::BUILTIN_TYPE_STRING)]],
             [Php80Dummy::class, 'promoted', null],
-            [Php80Dummy::class, 'collection', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, collection: true, collectionValueType: new LegacyType(LegacyType::BUILTIN_TYPE_STRING))]],
+            [Php80Dummy::class, 'collection', [new LegacyType(LegacyType::BUILTIN_TYPE_ARRAY, false, null, true, null, new LegacyType(LegacyType::BUILTIN_TYPE_STRING))]],
             [Php80PromotedDummy::class, 'promoted', null],
         ];
     }
@@ -574,7 +574,7 @@ class PhpStanExtractorTest extends TestCase
     {
         $this->expectUserDeprecationMessage('Since symfony/property-info 7.3: The "Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor::getTypes()" method is deprecated, use "Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor::getType()" instead.');
 
-        $extractor = new PhpStanExtractor(allowPrivateAccess: $allowPrivateAccess);
+        $extractor = new PhpStanExtractor(null, null, null, $allowPrivateAccess);
         $this->assertEquals(
             $expectedTypes,
             $extractor->getTypes(DummyPropertyAndGetterWithDifferentTypes::class, 'foo')
@@ -585,7 +585,7 @@ class PhpStanExtractorTest extends TestCase
     {
         return [
             [true, [new LegacyType('string')]],
-            [false, [new LegacyType('array', collection: true, collectionKeyType: new LegacyType('int'), collectionValueType: new LegacyType('string'))]],
+            [false, [new LegacyType('array', false, null, true, new LegacyType('int'), new LegacyType('string'))]],
         ];
     }
 
@@ -1068,7 +1068,7 @@ class PhpStanExtractorTest extends TestCase
     #[DataProvider('allowPrivateAccessProvider')]
     public function testAllowPrivateAccess(bool $allowPrivateAccess, Type $expectedType)
     {
-        $extractor = new PhpStanExtractor(allowPrivateAccess: $allowPrivateAccess);
+        $extractor = new PhpStanExtractor(null, null, null, $allowPrivateAccess);
 
         $this->assertEquals($expectedType, $extractor->getType(DummyPropertyAndGetterWithDifferentTypes::class, 'foo'));
     }
