@@ -674,8 +674,9 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
      * Searches for add and remove methods.
      *
      * @param \ReflectionClass $reflClass The reflection class for the given object
+     * @param string           $property  The camelized property name to singularize and probe
      *
-     * @return array An array containing the adder and remover when found and errors
+     * @return array{?string, ?string, list<string>} The adder method, the remover method, and any errors collected along the way
      */
     private function findAdderAndRemover(\ReflectionClass $reflClass, string $property): array
     {

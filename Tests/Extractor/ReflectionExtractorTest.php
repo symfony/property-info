@@ -552,6 +552,21 @@ class ReflectionExtractorTest extends TestCase
         $this->assertEquals(Type::string(), $this->extractor->getType(VirtualProperties::class, 'sameSetterType'));
     }
 
+    #[DataProvider('providePropertyHookShorthand')]
+    public function testPropertyHookShorthand(string $property)
+    {
+        $this->assertEquals(Type::bool(), $this->extractor->getType(VirtualProperties::class, $property));
+    }
+
+    public static function providePropertyHookShorthand(): array
+    {
+        return [
+            'set hook only' => ['virtualSetHookOnly'],
+            'get and set hooks' => ['virtualHook'],
+            'get only falls back to declared type' => ['virtualNoSetHook'],
+        ];
+    }
+
     #[DataProvider('provideAsymmetricVisibilityMutator')]
     public function testAsymmetricVisibilityMutator(string $property, string $readVisibility, string $writeVisibility)
     {
